@@ -40,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 TextView dateText = findViewById(R.id.date_view);
                                 long date = System.currentTimeMillis();
-                                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy\nhh-mm-ss a");
+                                // Update date only at 2:00A.M.
+                                date = date - 7200000;
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEEE M/dd");
                                 String dateString = sdf.format(date);
                                 dateText.setText(dateString);
                             }
@@ -51,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         thread.start();
-
-        view.placeholderText.setText("");
         setContentView(view.getRoot());
     }
 }
