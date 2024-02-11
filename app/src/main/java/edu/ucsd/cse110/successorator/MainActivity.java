@@ -1,23 +1,22 @@
 package edu.ucsd.cse110.successorator;
 
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import java.text.DateFormat;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
-import edu.ucsd.cse110.successorator.databinding.AddItemDialogBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,13 +28,31 @@ public class MainActivity extends AppCompatActivity {
             // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
             dialogFragment.show(getSupportFragmentManager(),"CreateItemDialogFragment");
         });
-        // TESTING FOR CALENDAR API INTERFACE
-        var calender = Calendar.getInstance().getTime();
-        var dateFormat = DateFormat.getDateInstance(DateFormat.FULL).format(calender);
 
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TextView dateText = findViewById(R.id.date_view);
+                                long date = System.currentTimeMillis();
+                                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy\nhh-mm-ss a");
+                                String dateString = sdf.format(date);
+                                dateText.setText(dateString);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {}
+            }
+        };
 
-        view.placeholderText.setText(dateFormat);
+        thread.start();
 
+        view.placeholderText.setText("");
         setContentView(view.getRoot());
     }
 }
