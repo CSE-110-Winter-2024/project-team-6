@@ -10,10 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import edu.ucsd.cse110.successorator.databinding.AddItemDialogBinding;
+import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
 
 public class CreateItemDialogFragment extends DialogFragment {
-    private AddItemDialogBinding view;
+    private FragmentDialogAddItemBinding view;
 
     CreateItemDialogFragment(){
         // Empty required constructor
@@ -29,7 +29,7 @@ public class CreateItemDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
-        this.view = AddItemDialogBinding.inflate(getLayoutInflater());
+        this.view = FragmentDialogAddItemBinding.inflate(getLayoutInflater());
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
