@@ -2,6 +2,7 @@ package edu.ucsd.cse110.successorator.ui.itemList.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
+import edu.ucsd.cse110.successorator.lib.domain.Item;
 
 public class CreateItemDialogFragment extends DialogFragment {
     private FragmentDialogAddItemBinding view;
@@ -41,6 +43,8 @@ public class CreateItemDialogFragment extends DialogFragment {
     }
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
+        var description = view.editTextDialog.getText().toString();
+        var item = new Item(description);
         dialog.dismiss();
     }
 
