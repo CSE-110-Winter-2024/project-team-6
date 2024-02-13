@@ -1,22 +1,22 @@
 package edu.ucsd.cse110.successorator;
 
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
+    private TextView dateText;
+    private String formattedDate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,30 +29,32 @@ public class MainActivity extends AppCompatActivity {
             dialogFragment.show(getSupportFragmentManager(),"CreateItemDialogFragment");
         });
 
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                TextView dateText = findViewById(R.id.date_view);
-                                long date = System.currentTimeMillis();
-                                // Update date only at 2:00A.M.
-                                date = date - 7200000;
-                                SimpleDateFormat sdf = new SimpleDateFormat("EEEE M/dd");
-                                String dateString = sdf.format(date);
-                                dateText.setText(dateString);
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {}
-            }
-        };
+        dateText = view.dateView;
 
-        thread.start();
         setContentView(view.getRoot());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Setup for AlarmManager for future implementation; will allow Receiver to interact with DataBase
+        var intent = new Intent(this, RolloverReceiver.class);
+        var pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Get formatted date and display.
+        ZonedDateTime clock = ZonedDateTime.now();
+        DateFormatter dateTracker = new DateFormatter(clock);
+
+        formattedDate = dateTracker.getDate();
+
+        dateText.setText(formattedDate);
     }
 }
