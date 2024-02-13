@@ -8,22 +8,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
-import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
+
 
 public class MainActivity extends AppCompatActivity {
+    private ActivityMainBinding view;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        var view = ActivityMainBinding.inflate(getLayoutInflater(), null, false);
-        view.addItem.setOnClickListener(v ->{
-            var dialogFragment = CreateItemDialogFragment.newInstance();
-            // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
-            dialogFragment.show(getSupportFragmentManager(),"CreateItemDialogFragment");
-        });
-        view.placeholderText.setText(R.string.hello_world);
-
+        setTitle(R.string.app_name);
+        this.view = ActivityMainBinding.inflate(getLayoutInflater(), null, false);
         setContentView(view.getRoot());
     }
 }
