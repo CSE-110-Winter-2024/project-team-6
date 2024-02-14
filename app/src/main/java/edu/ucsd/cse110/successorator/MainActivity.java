@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
+import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 
 public class MainActivity extends AppCompatActivity {

@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "Successorator"
 include(":app")
 include(":lib")
+include(":lib:test")
