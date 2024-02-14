@@ -55,13 +55,13 @@ public class Item implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Item)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return isDone() == item.isDone() && Objects.equals(getDescription(), item.getDescription());
+        return sortOrder == item.sortOrder && done == item.done && Objects.equals(description, item.description) && Objects.equals(id, item.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDescription(), isDone());
+        return Objects.hash(description, sortOrder, id, done);
     }
 }
