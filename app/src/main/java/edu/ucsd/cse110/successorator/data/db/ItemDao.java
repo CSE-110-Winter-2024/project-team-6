@@ -45,18 +45,44 @@ public interface ItemDao{
 
     @Transaction
     default int append(ItemEntity item){
+        List<ItemEntity> items = findAll();
+        int lastIncompleteSortOrder = Integer.MIN_VALUE;
+        int lastIncompleteIndex = -1;
+
+        // Find the last incomplete item
+        for (int i = 0; i < items.size(); i++) {
+            ItemEntity temp = items.get(i);
+            if (!temp.isDone) {
+                lastIncompleteSortOrder = Math.max(lastIncompleteSortOrder, temp.sortOrder);
+                lastIncompleteIndex = i;
+            }
+        }
+
+        // If no incomplete items were found, append the new item to the start of the list
+        if (lastIncompleteIndex == -1) {
+            var newItem = new ItemEntity(item.description, item.sortOrder, item.isDone);
+            return Math.toIntExact(insert(newItem));
+        }
+
+        // Append the new item after the last incomplete item
+        shiftSortOrders(lastIncompleteSortOrder + 1, getMaxSortOrder(), 1);
+        var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1, item.isDone);
+        return Math.toIntExact(insert(newItem));
+        /*
         var maxSortOrder = getMaxSortOrder();
         var newItem = new ItemEntity(
-                item.description, maxSortOrder + 1
+                item.description, maxSortOrder + 1, item.isDone
         );
         return Math.toIntExact(insert(newItem));
+
+         */
     }
 
     @Transaction
     default int prepend(ItemEntity item){
         shiftSortOrders(getMinSortOrder(), getMaxSortOrder(), 1);
         var newItem = new ItemEntity(
-                item.description, getMinSortOrder()-1
+                item.description, getMinSortOrder()-1, item.isDone
         );
         return Math.toIntExact(insert(newItem));
     }
@@ -64,6 +90,8 @@ public interface ItemDao{
     @Query("DELETE FROM items WHERE id = :id")
     void delete(int id);
 
+    @Query("UPDATE items SET is_done = ~is_done WHERE id = :id")
+    void markCompleteOrIncomplete(int id);
 
 
 }

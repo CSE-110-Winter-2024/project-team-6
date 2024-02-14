@@ -65,4 +65,7 @@ public class RoomItemRepository implements ItemRepository {
 
     @Override
     public int size(){return itemDao.count();}
+
+    @Override
+    public void markCompleteOrIncomplete(int id){itemDao.markCompleteOrIncomplete(id);}
 }

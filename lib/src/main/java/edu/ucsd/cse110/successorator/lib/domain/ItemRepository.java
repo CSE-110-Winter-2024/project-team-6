@@ -20,5 +20,8 @@ public interface ItemRepository {
 
     void prepend(Item flashcard);
 
+    void markCompleteOrIncomplete(int id);
+
     int size();
+
 }

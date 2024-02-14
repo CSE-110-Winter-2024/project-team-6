@@ -28,6 +28,7 @@ public class InMemoryDataSource {
     private final MutableSubject<List<Item>> allFlashcardsSubject
             = new SimpleSubject<>();
 
+
     public InMemoryDataSource() {
     }
 
@@ -78,9 +79,10 @@ public class InMemoryDataSource {
         return maxSortOrder;
     }
 
+
+
     public void putFlashcard(Item card) {
         var fixedCard = preInsert(card);
-
         flashcards.put(fixedCard.id(), fixedCard);
         postInsert();
         assertSortOrderConstraints();
@@ -121,6 +123,17 @@ public class InMemoryDataSource {
         allFlashcardsSubject.setValue(getFlashcards());
     }
 
+    public void markCompleteOrIncomplete(int id){
+        flashcards.get(id).markDone();
+
+        if(flashcardSubjects.containsKey(id)){
+            flashcardSubjects.get(id).setValue(flashcards.get(id));
+        }
+        allFlashcardsSubject.setValue(getFlashcards());
+    }
+
+
+
     public void shiftSortOrders(int from, int to, int by) {
         var cards = flashcards.values().stream()
                 .filter(card -> card.sortOrder() >= from && card.sortOrder() <= to)
@@ -145,7 +158,6 @@ public class InMemoryDataSource {
             // one. This is important for when we pre-load cards like in fromDefault().
             nextId = id + 1;
         }
-
         return card;
     }
 
