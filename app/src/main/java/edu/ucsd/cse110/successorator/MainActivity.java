@@ -1,22 +1,56 @@
 package edu.ucsd.cse110.successorator;
 
-import android.app.Activity;
+
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+
+import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 
 
 public class MainActivity extends AppCompatActivity {
+  private TextView dateText;
+    private String formattedDate;
+
     private ActivityMainBinding view;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
         this.view = ActivityMainBinding.inflate(getLayoutInflater(), null, false);
+      
+        dateText = this.view.dateView;
+
         setContentView(view.getRoot());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Setup for AlarmManager for future implementation; will allow Receiver to interact with DataBase
+        var intent = new Intent(this, RolloverReceiver.class);
+        var pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Get formatted date and display.
+        ZonedDateTime clock = ZonedDateTime.now();
+        DateFormatter dateTracker = new DateFormatter(clock);
+
+        formattedDate = dateTracker.getDate();
+
+        dateText.setText(formattedDate);
     }
 }
