@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class DateFormatter {
     private ZonedDateTime clock;
-    DateFormatter(ZonedDateTime clock) {
+    public DateFormatter(ZonedDateTime clock) {
         this.clock = clock.minusHours(2);
     }
     // The formatted date is what is changed
@@ -17,8 +17,16 @@ public class DateFormatter {
 
         String weekDay = clock.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
 
+        // Return a formatted string for the date
         String formattedDate = String.format("%s %d/%d", weekDay, month, day);
 
         return formattedDate;
+    }
+
+    // Functionality for Mock Date UI to update to next day
+    public String addDay() {
+        this.clock.plusDays(1);
+
+        return getDate();
     }
 }
