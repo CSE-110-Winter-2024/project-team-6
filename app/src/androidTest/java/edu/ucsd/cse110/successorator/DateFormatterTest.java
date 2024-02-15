@@ -65,4 +65,16 @@ public class DateFormatterTest {
         assertEquals("Thursday 2/1", dt.getDate(testClock));
 
     }
+
+    // Check to see if advance days will reformat the date.
+    @Test
+    public void addDays() {
+        ZonedDateTime testClock = ZonedDateTime.of(2024, 2, 15, 3, 3, 2, 1234, ZoneId.of("UTC"));
+        DateFormatter dt = new DateFormatter(testClock);
+        assertEquals("Thursday 2/15", dt.getDate(testClock));
+
+        // Advance a whole 2 days to ensure new date properly formatted.
+        testClock = testClock.plusDays(2);
+        assertEquals("Saturday 2/17", dt.getDate(testClock));
+    }
 }
