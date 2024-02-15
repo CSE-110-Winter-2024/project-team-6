@@ -12,25 +12,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
-import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
+
 
 public class MainActivity extends AppCompatActivity {
-    private TextView dateText;
+  private TextView dateText;
     private String formattedDate;
 
+    private ActivityMainBinding view;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        var view = ActivityMainBinding.inflate(getLayoutInflater(), null, false);
-        view.addItem.setOnClickListener(v ->{
-            var dialogFragment = CreateItemDialogFragment.newInstance();
-            // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
-            dialogFragment.show(getSupportFragmentManager(),"CreateItemDialogFragment");
-        });
-
-        dateText = view.dateView;
+        setTitle(R.string.app_name);
+        this.view = ActivityMainBinding.inflate(getLayoutInflater(), null, false);
+      
+        dateText = this.view.dateView;
 
         setContentView(view.getRoot());
     }
