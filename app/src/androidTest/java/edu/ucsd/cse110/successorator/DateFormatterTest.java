@@ -73,8 +73,7 @@ public class DateFormatterTest {
         DateFormatter dt = new DateFormatter(testClock);
         assertEquals("Thursday 2/15", dt.getDate(testClock));
 
-        // Advance a whole 2 days to ensure new date properly formatted.
-        testClock = testClock.plusDays(2);
-        assertEquals("Saturday 2/17", dt.getDate(testClock));
+        // Advance a whole day to ensure new date properly formatted.
+        assertEquals("Friday 2/16", dt.addDay(testClock));
     }
 }
