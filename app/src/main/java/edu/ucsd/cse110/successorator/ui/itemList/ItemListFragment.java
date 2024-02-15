@@ -28,6 +28,8 @@ public class ItemListFragment extends Fragment {
     private TextView dateText;
     private String formattedDate;
 
+    private DateFormatter dateFormatter;
+
 
 
     public ItemListFragment() {
@@ -68,6 +70,8 @@ public class ItemListFragment extends Fragment {
                 view.placeholderText.setVisibility(View.GONE);
             }
         });
+
+        dateFormatter = new DateFormatter(ZonedDateTime.now());
     }
 
     @Nullable
@@ -88,10 +92,7 @@ public class ItemListFragment extends Fragment {
 
             // When pressing the add date button, the Date will advance by 24hrs
             view.addDay.setOnClickListener(v -> {
-                ZonedDateTime clock = ZonedDateTime.now();
-                DateFormatter dateTracker = new DateFormatter(clock);
-
-                formattedDate = dateTracker.addDay();
+                formattedDate = dateFormatter.addDay(ZonedDateTime.now());
 
                 dateText.setText(formattedDate);
             });
@@ -104,10 +105,7 @@ public class ItemListFragment extends Fragment {
         super.onResume();
 
         // Get formatted date and display.
-        ZonedDateTime clock = ZonedDateTime.now();
-        DateFormatter dateTracker = new DateFormatter(clock);
-
-        formattedDate = dateTracker.getDate();
+        formattedDate = dateFormatter.getDate(ZonedDateTime.now());
 
         dateText.setText(formattedDate);
     }
