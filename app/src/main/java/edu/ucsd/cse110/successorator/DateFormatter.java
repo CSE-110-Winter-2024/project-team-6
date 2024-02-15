@@ -41,6 +41,6 @@ public class DateFormatter {
     // Functionality for Mock Date UI to update to next day
     public String addDay(ZonedDateTime clock) {
         dateAdvance++;
-        return getDate(clock.plusDays(dateAdvance));
+        return getDate(clock);
     }
 }
