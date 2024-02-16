@@ -3,6 +3,8 @@ package edu.ucsd.cse110.successorator.lib.domain;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,11 +16,11 @@ public class Item implements Serializable {
     private final @Nullable Integer id;
     private boolean done;
 
-    public Item(String description, @Nullable Integer id, int sortOrder){
+    public Item(String description, @Nullable Integer id, int sortOrder, boolean done){
         this.sortOrder = sortOrder;
         this.id = id;
         this.description = description;
-        done = false;
+        this.done = done;
     }
 
     public @Nullable Integer id() {
@@ -30,22 +32,23 @@ public class Item implements Serializable {
     }
 
     public Item withSortOrder(int sortOrder) {
-        return new Item(this.description, this.id, sortOrder);
+        return new Item(this.description, this.id, sortOrder, this.done);
     }
 
     public Item withId(int id) {
-        return new Item(this.description, id, this.sortOrder);
+        return new Item(this.description, id, this.sortOrder, this.done);
     }
+
     public String getDescription(){
         return description;
     }
 
     public boolean isDone(){
-        return done;
+        return this.done;
     }
 
     public void markDone(){
-        done = true;
+        this.done = !this.done;
     }
 
     public void setDescription(String description){

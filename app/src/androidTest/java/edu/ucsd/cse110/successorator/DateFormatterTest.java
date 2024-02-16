@@ -1,21 +1,15 @@
 package edu.ucsd.cse110.successorator;
 
 import static androidx.test.core.app.ActivityScenario.launch;
-
 import static junit.framework.TestCase.assertEquals;
-
 import android.content.res.Resources;
-
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 
 /**

@@ -37,16 +37,29 @@ public class SimpleItemRepository implements ItemRepository {
     public void remove(int id) {
         dataSource.removeFlashcard(id);
     }
-
     @Override
     public int size(){return dataSource.getFlashcards().size(); }
 
     @Override
-    public void append(Item flashcard){
-        dataSource.putFlashcard(
-                flashcard.withSortOrder(dataSource.getMaxSortOrder()+1)
-        );
+    public void append(Item item){
+        List<Item> items = dataSource.getFlashcards();
+
+        int lastIncompleteIndex = -1;
+        for(int i = 0; i < items.size(); i++){
+            Item temp = items.get(i);
+            if(!temp.isDone()){
+                lastIncompleteIndex = i;
+            }
+        }
+        if (lastIncompleteIndex == -1) {
+            //dataSource.putFlashcard(item.withSortOrder(dataSource.getMaxSortOrder() + 1));
+            return;
+        }
+        int lastIncompleteSortOrder = items.get(lastIncompleteIndex).sortOrder();
+        dataSource.shiftSortOrders(lastIncompleteSortOrder + 1, dataSource.getMaxSortOrder(), 1);
+        dataSource.putFlashcard(item.withSortOrder(lastIncompleteSortOrder + 1));
     }
+
 
     @Override
     public void prepend(Item flashcard){
@@ -55,4 +68,11 @@ public class SimpleItemRepository implements ItemRepository {
                 flashcard.withSortOrder(dataSource.getMinSortOrder() - 1)
         );
     }
+
+    @Override
+    public void markCompleteOrIncomplete(int id){
+        dataSource.markCompleteOrIncomplete(id);
+    }
+
+
 }

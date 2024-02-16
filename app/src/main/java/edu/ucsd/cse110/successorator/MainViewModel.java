@@ -2,6 +2,8 @@ package edu.ucsd.cse110.successorator;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -9,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.lib.domain.ItemRepository;
 import edu.ucsd.cse110.successorator.lib.util.MutableSubject;
@@ -23,8 +24,9 @@ public class MainViewModel extends ViewModel {
     // UI state
     private final MutableSubject<List<Item>> orderedCards;
     private final MutableSubject<Item> topCard;
-    private final MutableSubject<Boolean> isShowingFront;
     private final MutableSubject<String> displayedText;
+
+    private final MutableSubject<Boolean> isDone;
 
     public static final ViewModelInitializer<MainViewModel> initializer =
             new ViewModelInitializer<>(
@@ -41,11 +43,8 @@ public class MainViewModel extends ViewModel {
         // Create the observable subjects.
         this.orderedCards = new SimpleSubject<>();
         this.topCard = new SimpleSubject<>();
-        this.isShowingFront = new SimpleSubject<>();
         this.displayedText = new SimpleSubject<>();
-
-        // Initialize...
-        isShowingFront.setValue(true);
+        this.isDone = new SimpleSubject<>();
 
         // When the list of cards changes (or is first loaded), reset the ordering.
         itemRepository.findAll().observe(cards -> {
@@ -57,40 +56,26 @@ public class MainViewModel extends ViewModel {
             orderedCards.setValue(newOrderedCards);
         });
 
-
-        // When the ordering changes, update the top card.
-        orderedCards.observe(cards -> {
-            if (cards == null || cards.size() == 0) return;
-            var card = cards.get(0);
-            this.topCard.setValue(card);
-
-        });
-
-        // When the top card changes, update the displayed text and display the front side.
-        topCard.observe(card -> {
-            if (card == null) return;
-
-            displayedText.setValue(card.getDescription());
-            isShowingFront.setValue(true);
-        });
-
     }
+
+    public void markCompleteOrIncomplete(int id) { itemRepository.markCompleteOrIncomplete(id); }
 
     public Subject<String> getDisplayedText() {
         return displayedText;
     }
+
 
     public Subject<List<Item>> getOrderedCards() {
         return orderedCards;
     }
 
 
-    public void append(Item card){
-        itemRepository.append(card);
+    public void append(Item item){
+        itemRepository.append(item);
     }
 
-    public void prepend(Item card){
-        itemRepository.prepend(card);
+    public void prepend(Item item){
+        itemRepository.prepend(item);
     }
 
     public void remove(int id){
@@ -98,4 +83,5 @@ public class MainViewModel extends ViewModel {
     }
 
     public int size(){return itemRepository.size();}
+
 }

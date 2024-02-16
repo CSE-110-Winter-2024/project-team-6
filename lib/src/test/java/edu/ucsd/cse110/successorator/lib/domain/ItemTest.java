@@ -8,15 +8,15 @@ public class ItemTest {
 
     @org.junit.Test
     public void getDescription() {
-        var unexpected = new Item("Call Mom", 0, 0);
+        var unexpected = new Item("Call Mom", 0, 0, false);
         var expected = "Call Mom";
         assertEquals(expected, unexpected.getDescription());
     }
 
     @org.junit.Test
     public void isDone() {
-        var unexpected = new Item("Call Mom", 0, 0);
-        var expected = new Item("Call Mom", 0, 0);
+        var unexpected = new Item("Call Mom", 0, 0, false);
+        var expected = new Item("Call Mom", 0, 0, false);
         assertEquals(expected, unexpected);
         unexpected.markDone();
         expected.markDone();
@@ -25,17 +25,19 @@ public class ItemTest {
 
     @org.junit.Test
     public void markDone() {
-        var unexpected = new Item("Call Mom", 0, 0);
-        var expected = new Item("Call Mom", 0, 0);
+        var unexpected = new Item("Call Mom", 0, 0, false);
+        var expected = new Item("Call Mom", 0, 0, true);
         unexpected.markDone();
-        expected.markDone();
         assertEquals(expected, unexpected);
+        unexpected.markDone();
+        assertNotEquals(expected, unexpected);
+
     }
 
     @org.junit.Test
     public void setDescription() {
-        var unexpected = new Item("Call Mom", 0, 0);
-        var expected = new Item("Call Mom", 0, 0);
+        var unexpected = new Item("Call Mom", 0, 0, false);
+        var expected = new Item("Call Mom", 0, 0, false);
         unexpected.setDescription("Call Dad");
         expected.setDescription("Call Dad");
         assertEquals(expected, unexpected);
@@ -43,25 +45,28 @@ public class ItemTest {
 
     @Test
     public void testWithId() {
-        var card = new Item("Call Mom", 0, 0);
-        var expected = new Item("Call Mom", 42, 0);
+        var card = new Item("Call Mom", 0, 0, false);
+        var expected = new Item("Call Mom", 42, 0, false);
+
         var actual = card.withId(42);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testWithSortOrder() {
-        var card = new Item("Call Mom", 0, 0);
-        var expected = new Item("Call Mom", 0, 42);
+        var card = new Item("Call Mom", 0, 0, false);
+        var expected = new Item("Call Mom", 0, 42, false);
+
         var actual = card.withSortOrder(42);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testEquals() {
-        var card1 = new Item("Call Mom", 0, 0);
-        var card2 = new Item("Call Mom", 0, 0);
-        var card3 = new Item("Call Mom", 1, 0);
+        var card1 = new Item("Call Mom", 0, 0, false);
+        var card2 = new Item("Call Mom", 0, 0, false);
+        var card3 = new Item("Call Mom", 1, 0, false);
+
 
         assertEquals(card1, card2);
         assertNotEquals(card1, card3);
