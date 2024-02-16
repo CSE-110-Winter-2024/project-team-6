@@ -31,7 +31,7 @@ public class DateFormatterTest {
 
         DateFormatter dt = new DateFormatter(testClock);
 
-        assertEquals(dt.getDate(), "Wednesday 2/14");
+        assertEquals(dt.getDate(testClock), "Wednesday 2/14");
     }
 
     @Test
@@ -40,29 +40,40 @@ public class DateFormatterTest {
 
         DateFormatter dt = new DateFormatter(testClock);
 
-        assertEquals(dt.getDate(), "Tuesday 2/13");
+        assertEquals("Tuesday 2/13", dt.getDate(testClock));
     }
 
     @Test
     public void testRolloverChange() {
         ZonedDateTime testClock = ZonedDateTime.of(2024, 2, 14, 1, 3, 2, 1234, ZoneId.of("UTC"));
+
         DateFormatter dt = new DateFormatter(testClock);
-        assertEquals(dt.getDate(), "Tuesday 2/13");
+        String receivedDate = dt.getDate(testClock);
+        assertEquals("Tuesday 2/13", receivedDate);
 
         testClock = testClock.plusHours(1);
-        DateFormatter dt2 = new DateFormatter(testClock);
-        assertEquals(dt2.getDate(), "Wednesday 2/14");
+        assertEquals("Wednesday 2/14", dt.getDate(testClock));
     }
 
     @Test
     public void monthChange() {
         ZonedDateTime testClock = ZonedDateTime.of(2024, 1, 31, 3, 3, 2, 1234, ZoneId.of("UTC"));
         DateFormatter dt = new DateFormatter(testClock);
-        assertEquals(dt.getDate(), "Wednesday 1/31");
+        assertEquals("Wednesday 1/31", dt.getDate(testClock));
 
         testClock = testClock.plusHours(24);
-        DateFormatter dt2 = new DateFormatter(testClock);
-        assertEquals(dt2.getDate(), "Thursday 2/1");
+        assertEquals("Thursday 2/1", dt.getDate(testClock));
 
+    }
+
+    // Check to see if advance days will reformat the date.
+    @Test
+    public void addDays() {
+        ZonedDateTime testClock = ZonedDateTime.of(2024, 2, 15, 3, 3, 2, 1234, ZoneId.of("UTC"));
+        DateFormatter dt = new DateFormatter(testClock);
+        assertEquals("Thursday 2/15", dt.getDate(testClock));
+
+        // Advance a whole day to ensure new date properly formatted.
+        assertEquals("Friday 2/16", dt.addDay(testClock));
     }
 }

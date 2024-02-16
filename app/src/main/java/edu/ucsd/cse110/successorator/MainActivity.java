@@ -15,17 +15,12 @@ import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 
 
 public class MainActivity extends AppCompatActivity {
-  private TextView dateText;
-    private String formattedDate;
-
     private ActivityMainBinding view;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.app_name);
         this.view = ActivityMainBinding.inflate(getLayoutInflater(), null, false);
-      
-        dateText = this.view.dateView;
 
         setContentView(view.getRoot());
     }
@@ -44,13 +39,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (PendingIntent.CanceledException e) {
             throw new RuntimeException(e);
         }
-
-        // Get formatted date and display.
-        ZonedDateTime clock = ZonedDateTime.now();
-        DateFormatter dateTracker = new DateFormatter(clock);
-
-        formattedDate = dateTracker.getDate();
-
-        dateText.setText(formattedDate);
     }
 }
