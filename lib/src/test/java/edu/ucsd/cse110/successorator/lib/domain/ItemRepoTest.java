@@ -1,7 +1,9 @@
 package edu.ucsd.cse110.successorator.lib.domain;
+
 import static org.junit.Assert.*;
 
 import org.junit.Before;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -10,8 +12,10 @@ import java.util.List;
 import edu.ucsd.cse110.successorator.lib.data.InMemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 
+
 //Citation: ChatGPT was used as an aid to help write some tests
 public class ItemRepoTest {
+
     private InMemoryDataSource dataSource;
     private ItemRepository itemRepository;
     @Before
@@ -122,12 +126,14 @@ public class ItemRepoTest {
         assertEquals(2, dataSource.getFlashcards().get(2).sortOrder());
     }
 
+
     @Test
     public void testPrepend() {
         // Add some items to the DataSource
         List<Item> items = new ArrayList<>();
         dataSource = new InMemoryDataSource();
         itemRepository = new SimpleItemRepository(dataSource);
+
         items.add(new Item("Item 1", 1, 1, false));
         items.add(new Item("Item 2", 2, 2, false));
         dataSource.putFlashcards(items);
@@ -135,10 +141,12 @@ public class ItemRepoTest {
         // Call the prepend method with a new item
         itemRepository.prepend(new Item("New Item", 3, 0, false));
 
+
         // Verify that the new item was added with the correct sort order
         assertEquals(3, dataSource.getFlashcards().size());
         assertEquals(1, dataSource.getMinSortOrder());
     }
+
 
     @Test
     public void testMarkCompleteOrIncomplete() {
@@ -152,4 +160,5 @@ public class ItemRepoTest {
         // Verify that the item's done status was toggled
         assertTrue(dataSource.getFlashcards().get(0).isDone());
     }
+
 }
