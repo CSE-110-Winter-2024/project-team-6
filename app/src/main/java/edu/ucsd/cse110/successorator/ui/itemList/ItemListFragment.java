@@ -31,6 +31,13 @@ public class ItemListFragment extends Fragment {
 
     private DateFormatter dateFormatter;
 
+    private TextView dateText;
+    private String formattedDate;
+
+    private DateFormatter dateFormatter;
+
+
+
     public ItemListFragment() {
         // Required empty public constructor
     }
@@ -52,9 +59,12 @@ public class ItemListFragment extends Fragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
 
+
         // Initialize the Adapter (with an empty list for now)
 
+
         this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete);
+
 
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
@@ -74,8 +84,6 @@ public class ItemListFragment extends Fragment {
         });
 
         dateFormatter = new DateFormatter(ZonedDateTime.now());
-
-
     }
 
     @Nullable
@@ -90,12 +98,14 @@ public class ItemListFragment extends Fragment {
                 // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
                 dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
             });
+
             // When pressing the add date button, the Date will advance by 24hrs
             view.addDay.setOnClickListener(v -> {
                 formattedDate = dateFormatter.addDay(ZonedDateTime.now());
 
                 dateText.setText(formattedDate);
             });
+
             return view.getRoot();
     }
 

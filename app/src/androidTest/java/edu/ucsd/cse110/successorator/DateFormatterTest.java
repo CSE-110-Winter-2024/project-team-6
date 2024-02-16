@@ -1,4 +1,5 @@
 package edu.ucsd.cse110.successorator;
+
 import static androidx.test.core.app.ActivityScenario.launch;
 import static junit.framework.TestCase.assertEquals;
 import android.content.res.Resources;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
