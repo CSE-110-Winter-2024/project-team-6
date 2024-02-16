@@ -70,6 +70,17 @@ public class SimpleItemRepository implements ItemRepository {
     }
 
     @Override
+    public void removeAllComplete(){
+        List<Item> items = dataSource.getFlashcards();
+        for(int i = 0; i < items.size(); i++){
+            Item temp = items.get(i);
+            if(temp.isDone()){
+                remove(temp.id());
+            }
+        }
+    }
+
+    @Override
     public void markCompleteOrIncomplete(int id){
         dataSource.markCompleteOrIncomplete(id);
     }

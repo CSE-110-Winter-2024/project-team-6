@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 
 @Entity(tableName = "items")

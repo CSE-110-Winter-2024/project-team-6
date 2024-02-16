@@ -1,5 +1,11 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,12 +15,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
@@ -29,8 +39,9 @@ public class ItemListFragment extends Fragment {
     private ItemListAdapter adapter;
     private TextView dateText;
     private String formattedDate;
-
     private DateFormatter dateFormatter;
+
+    private String lastRecordedDate = "";
     public ItemListFragment() {
         // Required empty public constructor
     }
@@ -95,20 +106,16 @@ public class ItemListFragment extends Fragment {
             // When pressing the add date button, the Date will advance by 24hrs
             view.addDay.setOnClickListener(v -> {
                 formattedDate = dateFormatter.addDay(ZonedDateTime.now());
-
                 dateText.setText(formattedDate);
+                activityModel.removeAllComplete();
             });
-
             return view.getRoot();
     }
-
     @Override
     public void onResume() {
         super.onResume();
-
         // Get formatted date and display.
         formattedDate = dateFormatter.getDate(ZonedDateTime.now());
-
         dateText.setText(formattedDate);
     }
 }

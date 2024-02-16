@@ -84,4 +84,6 @@ public class MainViewModel extends ViewModel {
 
     public int size(){return itemRepository.size();}
 
+    public void removeAllComplete(){itemRepository.removeAllComplete();}
+
 }
