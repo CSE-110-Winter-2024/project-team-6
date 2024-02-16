@@ -5,15 +5,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
@@ -23,6 +26,10 @@ public class ItemListFragment extends Fragment {
     private MainViewModel activityModel;
     private FragmentCardListBinding view;
     private ItemListAdapter adapter;
+    private TextView dateText;
+    private String formattedDate;
+
+    private DateFormatter dateFormatter;
 
     public ItemListFragment() {
         // Required empty public constructor
@@ -66,6 +73,8 @@ public class ItemListFragment extends Fragment {
             }
         });
 
+        dateFormatter = new DateFormatter(ZonedDateTime.now());
+
 
     }
 
@@ -75,11 +84,28 @@ public class ItemListFragment extends Fragment {
             this.view = FragmentCardListBinding.inflate(inflater, container, false);
             // Set the adapter on the ListView
             view.cardList.setAdapter(adapter);
+            dateText = this.view.dateView;
             view.addItem.setOnClickListener(v ->{
                 var dialogFragment = CreateItemDialogFragment.newInstance();
                 // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
                 dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
             });
+            // When pressing the add date button, the Date will advance by 24hrs
+            view.addDay.setOnClickListener(v -> {
+                formattedDate = dateFormatter.addDay(ZonedDateTime.now());
+
+                dateText.setText(formattedDate);
+            });
             return view.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Get formatted date and display.
+        formattedDate = dateFormatter.getDate(ZonedDateTime.now());
+
+        dateText.setText(formattedDate);
     }
 }

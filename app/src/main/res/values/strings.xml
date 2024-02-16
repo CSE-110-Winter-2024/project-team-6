@@ -2,4 +2,6 @@
     <string name="app_name">Successorator</string>
     <string name="placeholder">Placeholder</string>
     <string name="hello_world">Hello, World!</string>
+    <string name="time_text">timetext</string>
+    <string name="add_day_text"><![CDATA[>]]></string>
 </resources>

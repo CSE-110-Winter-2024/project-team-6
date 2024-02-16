@@ -60,6 +60,7 @@ public class SimpleItemRepository implements ItemRepository {
         dataSource.putFlashcard(item.withSortOrder(lastIncompleteSortOrder + 1));
     }
 
+
     @Override
     public void prepend(Item flashcard){
         dataSource.shiftSortOrders(0, dataSource.getMaxSortOrder(), 1);
