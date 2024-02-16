@@ -31,14 +31,6 @@ public class ItemListFragment extends Fragment {
     private String formattedDate;
 
     private DateFormatter dateFormatter;
-
-    private TextView dateText;
-    private String formattedDate;
-
-    private DateFormatter dateFormatter;
-
-
-
     public ItemListFragment() {
         // Required empty public constructor
     }
