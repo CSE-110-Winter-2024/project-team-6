@@ -18,6 +18,7 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
+
 import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
