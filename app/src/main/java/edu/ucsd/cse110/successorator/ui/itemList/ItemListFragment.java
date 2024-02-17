@@ -115,7 +115,7 @@ public class ItemListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // Get formatted date and display.
-        if (!dateFormatter.getDate(ZonedDateTime.now()).equals(formattedDate)) {
+        if (!(dateFormatter.getDate(ZonedDateTime.now()).equals(formattedDate))) {
             activityModel.removeAllComplete();
             formattedDate = dateFormatter.getDate(ZonedDateTime.now());
         }
