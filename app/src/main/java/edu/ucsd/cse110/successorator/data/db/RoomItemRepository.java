@@ -68,4 +68,7 @@ public class RoomItemRepository implements ItemRepository {
 
     @Override
     public void markCompleteOrIncomplete(int id){itemDao.markCompleteOrIncomplete(id);}
+
+    @Override
+    public void removeAllComplete(){itemDao.removeAllComplete();};
 }

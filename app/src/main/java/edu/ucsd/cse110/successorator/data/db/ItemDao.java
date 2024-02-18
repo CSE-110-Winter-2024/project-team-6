@@ -68,14 +68,6 @@ public interface ItemDao{
         shiftSortOrders(lastIncompleteSortOrder + 1, getMaxSortOrder(), 1);
         var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1, item.isDone);
         return Math.toIntExact(insert(newItem));
-        /*
-        var maxSortOrder = getMaxSortOrder();
-        var newItem = new ItemEntity(
-                item.description, maxSortOrder + 1, item.isDone
-        );
-        return Math.toIntExact(insert(newItem));
-
-         */
     }
 
     @Transaction
@@ -86,6 +78,9 @@ public interface ItemDao{
         );
         return Math.toIntExact(insert(newItem));
     }
+
+    @Query("DELETE FROM items WHERE is_done = true")
+    void removeAllComplete();
 
     @Query("DELETE FROM items WHERE id = :id")
     void delete(int id);

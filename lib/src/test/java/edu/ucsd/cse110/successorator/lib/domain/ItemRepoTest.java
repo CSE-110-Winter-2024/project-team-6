@@ -161,4 +161,30 @@ public class ItemRepoTest {
         assertTrue(dataSource.getFlashcards().get(0).isDone());
     }
 
+    @Test
+    public void testRemoveComplete(){
+        Item item = new Item("complete Item", 1, 1, true);
+        Item item2 = new Item("Incomplete Item", 1, 1, false);
+        dataSource.putFlashcard(item);
+        dataSource.putFlashcard(item2);
+
+        //Call removeAllComplete
+        itemRepository.removeAllComplete();
+
+        //Check the itemRepository size
+        assertEquals(dataSource.getFlashcards().size(), 1);
+
+        //Test with multiple completed Items
+        Item item3 = new Item("Complete Item", 2, 2, true);
+        dataSource.putFlashcard(item);
+        dataSource.putFlashcard(item2);
+        dataSource.putFlashcard(item3);
+
+        itemRepository.removeAllComplete();
+
+        assertEquals(dataSource.getFlashcards().size(), 1);
+
+    }
+
+
 }

@@ -24,4 +24,6 @@ public interface ItemRepository {
 
     int size();
 
+    void removeAllComplete();
+
 }
