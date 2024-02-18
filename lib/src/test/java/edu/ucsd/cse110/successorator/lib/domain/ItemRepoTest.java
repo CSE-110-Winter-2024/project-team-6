@@ -173,6 +173,18 @@ public class ItemRepoTest {
 
         //Check the itemRepository size
         assertEquals(dataSource.getFlashcards().size(), 1);
+
+        //Test with multiple completed Items
+        Item item3 = new Item("Complete Item", 2, 2, true);
+        dataSource.putFlashcard(item);
+        dataSource.putFlashcard(item2);
+        dataSource.putFlashcard(item3);
+
+        itemRepository.removeAllComplete();
+
+        assertEquals(dataSource.getFlashcards().size(), 1);
+
     }
+
 
 }
