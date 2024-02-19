@@ -21,11 +21,11 @@ public class InMemoryDataSource {
     private int minSortOrder = Integer.MAX_VALUE;
     private int maxSortOrder = Integer.MIN_VALUE;
 
-    private final Map<Integer, Item> flashcards
+    private final Map<Integer, Item> items
             = new HashMap<>();
-    private final Map<Integer, MutableSubject<Item>> flashcardSubjects
+    private final Map<Integer, MutableSubject<Item>> itemSubjects
             = new HashMap<>();
-    private final MutableSubject<List<Item>> allFlashcardsSubject
+    private final MutableSubject<List<Item>> allItemsSubject
             = new SimpleSubject<>();
 
 
@@ -46,29 +46,29 @@ public class InMemoryDataSource {
 
     public static InMemoryDataSource fromDefault() {
         var data = new InMemoryDataSource();
-        data.putFlashcards(DEFAULT_CARDS);
+        data.putItems(DEFAULT_CARDS);
         return data;
     }
 
-    public List<Item> getFlashcards() {
-        return List.copyOf(flashcards.values());
+    public List<Item> getItems() {
+        return List.copyOf(items.values());
     }
 
-    public Item getFlashcard(int id) {
-        return flashcards.get(id);
+    public Item getItem(int id) {
+        return items.get(id);
     }
 
-    public Subject<Item> getFlashcardSubject(int id) {
-        if (!flashcardSubjects.containsKey(id)) {
+    public Subject<Item> getItemSubject(int id) {
+        if (!itemSubjects.containsKey(id)) {
             var subject = new SimpleSubject<Item>();
-            subject.setValue(getFlashcard(id));
-            flashcardSubjects.put(id, subject);
+            subject.setValue(getItem(id));
+            itemSubjects.put(id, subject);
         }
-        return flashcardSubjects.get(id);
+        return itemSubjects.get(id);
     }
 
-    public Subject<List<Item>> getAllFlashcardsSubject() {
-        return allFlashcardsSubject;
+    public Subject<List<Item>> getAllItemsSubject() {
+        return allItemsSubject;
     }
 
     public int getMinSortOrder() {
@@ -81,84 +81,84 @@ public class InMemoryDataSource {
 
 
 
-    public void putFlashcard(Item card) {
+    public void putItem(Item card) {
         var fixedCard = preInsert(card);
-        flashcards.put(fixedCard.id(), fixedCard);
+        items.put(fixedCard.id(), fixedCard);
         postInsert();
         assertSortOrderConstraints();
 
-        if (flashcardSubjects.containsKey(fixedCard.id())) {
-            flashcardSubjects.get(fixedCard.id()).setValue(fixedCard);
+        if (itemSubjects.containsKey(fixedCard.id())) {
+            itemSubjects.get(fixedCard.id()).setValue(fixedCard);
         }
-        allFlashcardsSubject.setValue(getFlashcards());
+        allItemsSubject.setValue(getItems());
     }
 
-    public void putFlashcards(List<Item> cards) {
+    public void putItems(List<Item> cards) {
         var fixedCards = cards.stream()
                 .map(this::preInsert)
                 .collect(Collectors.toList());
 
-        fixedCards.forEach(card -> flashcards.put(card.id(), card));
+        fixedCards.forEach(card -> items.put(card.id(), card));
         postInsert();
         assertSortOrderConstraints();
 
         fixedCards.forEach(card -> {
-            if (flashcardSubjects.containsKey(card.id())) {
-                flashcardSubjects.get(card.id()).setValue(card);
+            if (itemSubjects.containsKey(card.id())) {
+                itemSubjects.get(card.id()).setValue(card);
             }
         });
-        allFlashcardsSubject.setValue(getFlashcards());
+        allItemsSubject.setValue(getItems());
     }
 
-    public void removeFlashcard(int id) {
-        var card = flashcards.get(id);
+    public void removeItem(int id) {
+        var card = items.get(id);
         var sortOrder = card.sortOrder();
 
-        flashcards.remove(id);
+        items.remove(id);
         shiftSortOrders(sortOrder, maxSortOrder, -1);
 
-        if (flashcardSubjects.containsKey(id)) {
-            flashcardSubjects.get(id).setValue(null);
+        if (itemSubjects.containsKey(id)) {
+            itemSubjects.get(id).setValue(null);
         }
-        allFlashcardsSubject.setValue(getFlashcards());
+        allItemsSubject.setValue(getItems());
     }
 
     public void markCompleteOrIncomplete(int id){
-        flashcards.get(id).markDone();
+        items.get(id).markDone();
 
-        if(flashcardSubjects.containsKey(id)){
-            flashcardSubjects.get(id).setValue(flashcards.get(id));
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
         }
-        allFlashcardsSubject.setValue(getFlashcards());
+        allItemsSubject.setValue(getItems());
     }
 
 
 
     public void shiftSortOrders(int from, int to, int by) {
-        var cards = flashcards.values().stream()
+        var cards = items.values().stream()
                 .filter(card -> card.sortOrder() >= from && card.sortOrder() <= to)
                 .map(card -> card.withSortOrder(card.sortOrder() + by))
                 .collect(Collectors.toList());
 
-        putFlashcards(cards);
+        putItems(cards);
     }
 
     /**
      * Private utility method to maintain state of the fake DB: ensures that new
      * cards inserted have an id, and updates the nextId if necessary.
      */
-    private Item preInsert(Item card) {
-        var id = card.id();
+    private Item preInsert(Item item) {
+        var id = item.id();
         if (id == null) {
-            // If the card has no id, give it one.
-            card = card.withId(nextId++);
+            // If the item has no id, give it one.
+            item = item.withId(nextId++);
         }
         else if (id > nextId) {
-            // If the card has an id, update nextId if necessary to avoid giving out the same
+            // If the item has an id, update nextId if necessary to avoid giving out the same
             // one. This is important for when we pre-load cards like in fromDefault().
             nextId = id + 1;
         }
-        return card;
+        return item;
     }
 
     /**
@@ -167,12 +167,12 @@ public class InMemoryDataSource {
      */
     private void postInsert() {
         // Keep the min and max sort orders up to date.
-        minSortOrder = flashcards.values().stream()
+        minSortOrder = items.values().stream()
                 .map(Item::sortOrder)
                 .min(Integer::compareTo)
                 .orElse(Integer.MAX_VALUE);
 
-        maxSortOrder = flashcards.values().stream()
+        maxSortOrder = items.values().stream()
                 .map(Item::sortOrder)
                 .max(Integer::compareTo)
                 .orElse(Integer.MIN_VALUE);
@@ -187,7 +187,7 @@ public class InMemoryDataSource {
      */
     private void assertSortOrderConstraints() {
         // Get all the sort orders...
-        var sortOrders = flashcards.values().stream()
+        var sortOrders = items.values().stream()
                 .map(Item::sortOrder)
                 .collect(Collectors.toList());
 

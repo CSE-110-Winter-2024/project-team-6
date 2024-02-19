@@ -10,15 +10,15 @@ public interface ItemRepository {
 
     Subject<List<Item>> findAll();
 
-    void save(Item flashcard);
+    void save(Item item);
 
-    void save(List<Item> flashcards);
+    void save(List<Item> items);
 
     void remove(int id);
 
-    void append(Item flashcard);
+    void append(Item item);
 
-    void prepend(Item flashcard);
+    void prepend(Item item);
 
     void markCompleteOrIncomplete(int id);
 
