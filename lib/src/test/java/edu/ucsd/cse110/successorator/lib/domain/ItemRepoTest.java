@@ -30,13 +30,13 @@ public class ItemRepoTest {
         List<Item> items = new ArrayList<>();
         items.add(new Item("Item 1", 1, 1, false));
         items.add(new Item("Item 2", 2, 2, true));
-        dataSource.putFlashcards(items);
+        dataSource.putItems(items);
 
         // Call the findAll method
         Subject<List<Item>> result = itemRepository.findAll();
 
         // Verify that the result matches the items in the DataSource
-        assertEquals(dataSource.getAllFlashcardsSubject().getValue(), result.getValue());
+        assertEquals(dataSource.getAllItemsSubject().getValue(), result.getValue());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ItemRepoTest {
         itemRepository.save(item);
 
         // Verify that the item was saved to the DataSource
-        assertTrue(dataSource.getFlashcards().contains(item));
+        assertTrue(dataSource.getItems().contains(item));
     }
 
     @Test
@@ -62,20 +62,20 @@ public class ItemRepoTest {
         itemRepository.save(items);
 
         // Verify that the items were saved to the DataSource
-        assertTrue(dataSource.getFlashcards().containsAll(items));
+        assertTrue(dataSource.getItems().containsAll(items));
     }
 
     @Test
     public void testRemove() {
         // Add an item to the DataSource
         Item item = new Item("Test Item", 1, 1, false);
-        dataSource.putFlashcard(item);
+        dataSource.putItem(item);
 
         // Call the remove method
         itemRepository.remove(item.id());
 
         // Verify that the item was removed from the DataSource
-        assertFalse(dataSource.getFlashcards().contains(item));
+        assertFalse(dataSource.getItems().contains(item));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ItemRepoTest {
         items.add(new Item("Item 1", 1, 1, false));
         items.add(new Item("Item 2", 2, 2, false));
         items.add(new Item("Item 3", 3, 3, true));
-        dataSource.putFlashcards(items);
+        dataSource.putItems(items);
 
         // Call the size method
         int size = itemRepository.size();
@@ -101,13 +101,13 @@ public class ItemRepoTest {
 
         items.add(new Item("Complete Item 1", 1, 1, true));
         items.add(new Item("Complete Item 2", 2, 2, true));
-        dataSource.putFlashcards(items);
+        dataSource.putItems(items);
 
         // Call the append method with a new item
         itemRepository.append(new Item("New Item", 3, 3, false));
 
         // Verify that the new item was not added (no incomplete items)
-        assertEquals(2, dataSource.getFlashcards().size());
+        assertEquals(2, dataSource.getItems().size());
     }
 
     @Test
@@ -116,14 +116,14 @@ public class ItemRepoTest {
         List<Item> items = new ArrayList<>();
         items.add(new Item("Incomplete Item", 1, 1, false));
         items.add(new Item("Complete Item", 2, 2, true));
-        dataSource.putFlashcards(items);
+        dataSource.putItems(items);
 
         // Call the append method with a new incomplete item
         itemRepository.append(new Item("New Incomplete Item", 3, 3, false));
 
         // Verify that the new item was added with the correct sort order
-        assertEquals(3, dataSource.getFlashcards().size());
-        assertEquals(2, dataSource.getFlashcards().get(2).sortOrder());
+        assertEquals(3, dataSource.getItems().size());
+        assertEquals(2, dataSource.getItems().get(2).sortOrder());
     }
 
 
@@ -136,14 +136,14 @@ public class ItemRepoTest {
 
         items.add(new Item("Item 1", 1, 1, false));
         items.add(new Item("Item 2", 2, 2, false));
-        dataSource.putFlashcards(items);
+        dataSource.putItems(items);
 
         // Call the prepend method with a new item
         itemRepository.prepend(new Item("New Item", 3, 0, false));
 
 
         // Verify that the new item was added with the correct sort order
-        assertEquals(3, dataSource.getFlashcards().size());
+        assertEquals(3, dataSource.getItems().size());
         assertEquals(1, dataSource.getMinSortOrder());
     }
 
@@ -152,37 +152,37 @@ public class ItemRepoTest {
     public void testMarkCompleteOrIncomplete() {
         // Add an incomplete item to the DataSource
         Item item = new Item("Incomplete Item", 1, 1, false);
-        dataSource.putFlashcard(item);
+        dataSource.putItem(item);
 
         // Call the markCompleteOrIncomplete method
         itemRepository.markCompleteOrIncomplete(item.id());
 
         // Verify that the item's done status was toggled
-        assertTrue(dataSource.getFlashcards().get(0).isDone());
+        assertTrue(dataSource.getItems().get(0).isDone());
     }
 
     @Test
     public void testRemoveComplete(){
         Item item = new Item("complete Item", 1, 1, true);
         Item item2 = new Item("Incomplete Item", 1, 1, false);
-        dataSource.putFlashcard(item);
-        dataSource.putFlashcard(item2);
+        dataSource.putItem(item);
+        dataSource.putItem(item2);
 
         //Call removeAllComplete
         itemRepository.removeAllComplete();
 
         //Check the itemRepository size
-        assertEquals(dataSource.getFlashcards().size(), 1);
+        assertEquals(dataSource.getItems().size(), 1);
 
         //Test with multiple completed Items
         Item item3 = new Item("Complete Item", 2, 2, true);
-        dataSource.putFlashcard(item);
-        dataSource.putFlashcard(item2);
-        dataSource.putFlashcard(item3);
+        dataSource.putItem(item);
+        dataSource.putItem(item2);
+        dataSource.putItem(item3);
 
         itemRepository.removeAllComplete();
 
-        assertEquals(dataSource.getFlashcards().size(), 1);
+        assertEquals(dataSource.getItems().size(), 1);
 
     }
 

@@ -15,34 +15,34 @@ public class SimpleItemRepository implements ItemRepository {
 
     @Override
     public Subject<Item> find(int id) {
-        return dataSource.getFlashcardSubject(id);
+        return dataSource.getItemSubject(id);
     }
 
     @Override
     public Subject<List<Item>> findAll() {
-        return dataSource.getAllFlashcardsSubject();
+        return dataSource.getAllItemsSubject();
     }
 
     @Override
-    public void save(Item flashcard) {
-        dataSource.putFlashcard(flashcard);
+    public void save(Item item) {
+        dataSource.putItem(item);
     }
 
     @Override
-    public void save(List<Item> flashcards) {
-        dataSource.putFlashcards(flashcards);
+    public void save(List<Item> items) {
+        dataSource.putItems(items);
     }
 
     @Override
     public void remove(int id) {
-        dataSource.removeFlashcard(id);
+        dataSource.removeItem(id);
     }
     @Override
-    public int size(){return dataSource.getFlashcards().size(); }
+    public int size(){return dataSource.getItems().size(); }
 
     @Override
     public void append(Item item){
-        List<Item> items = dataSource.getFlashcards();
+        List<Item> items = dataSource.getItems();
 
         int lastIncompleteIndex = -1;
         for(int i = 0; i < items.size(); i++){
@@ -57,21 +57,21 @@ public class SimpleItemRepository implements ItemRepository {
         }
         int lastIncompleteSortOrder = items.get(lastIncompleteIndex).sortOrder();
         dataSource.shiftSortOrders(lastIncompleteSortOrder + 1, dataSource.getMaxSortOrder(), 1);
-        dataSource.putFlashcard(item.withSortOrder(lastIncompleteSortOrder + 1));
+        dataSource.putItem(item.withSortOrder(lastIncompleteSortOrder + 1));
     }
 
 
     @Override
-    public void prepend(Item flashcard){
+    public void prepend(Item item){
         dataSource.shiftSortOrders(0, dataSource.getMaxSortOrder(), 1);
-        dataSource.putFlashcard(
-                flashcard.withSortOrder(dataSource.getMinSortOrder() - 1)
+        dataSource.putItem(
+                item.withSortOrder(dataSource.getMinSortOrder() - 1)
         );
     }
 
     @Override
     public void removeAllComplete(){
-        List<Item> items = dataSource.getFlashcards();
+        List<Item> items = dataSource.getItems();
         for(int i = 0; i < items.size(); i++){
             Item temp = items.get(i);
             if(temp.isDone()){
