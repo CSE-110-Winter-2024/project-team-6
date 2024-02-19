@@ -17,10 +17,10 @@
         android:theme="@style/Theme.Successorator">
 
 
-        <receiver
-            android:name=".RolloverReceiver"
-            android:enabled="true"
-            android:exported="true" />
+<!--        <receiver-->
+<!--            android:name=".RolloverReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true" />-->
 
         <activity
             android:name=".MainActivity"
