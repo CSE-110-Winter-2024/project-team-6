@@ -3,12 +3,8 @@ package edu.ucsd.cse110.successorator.lib.domain;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZonedDateTime;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 public class Item implements Serializable {
     private String description;
 
@@ -16,11 +12,20 @@ public class Item implements Serializable {
     private final @Nullable Integer id;
     private boolean done;
 
-    public Item(String description, @Nullable Integer id, int sortOrder, boolean done){
+    // Track the date that the Item is associated with
+    private ZonedDateTime date;
+
+    // Track if Item is a recurring goal
+    private boolean recurring;
+
+    public Item(String description, @Nullable Integer id, int sortOrder, boolean done,
+                ZonedDateTime date, boolean recurring){
         this.sortOrder = sortOrder;
         this.id = id;
         this.description = description;
         this.done = done;
+        this.date = date;
+        this.recurring = recurring;
     }
 
     public @Nullable Integer id() {
@@ -32,11 +37,11 @@ public class Item implements Serializable {
     }
 
     public Item withSortOrder(int sortOrder) {
-        return new Item(this.description, this.id, sortOrder, this.done);
+        return new Item(this.description, this.id, sortOrder, this.done, this.date, this.recurring);
     }
 
     public Item withId(int id) {
-        return new Item(this.description, id, this.sortOrder, this.done);
+        return new Item(this.description, id, this.sortOrder, this.done, this.date, this.recurring);
     }
 
     public String getDescription(){
@@ -55,16 +60,27 @@ public class Item implements Serializable {
         this.description = description;
     }
 
+    public void setDate(ZonedDateTime date) { this.date = date; }
+
+    public ZonedDateTime getDate() { return this.date; }
+
+    public void markRecurring() { this.recurring = !this.recurring; }
+
+    public boolean isRecurring() { return this.recurring; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return sortOrder == item.sortOrder && done == item.done && Objects.equals(description, item.description) && Objects.equals(id, item.id);
+        return sortOrder == item.sortOrder && done == item.done &&
+                Objects.equals(description, item.description) &&
+                Objects.equals(id, item.id) && Objects.equals(date, item.date) &&
+                recurring == item.recurring;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, sortOrder, id, done);
+        return Objects.hash(description, sortOrder, id, done, date, recurring);
     }
 }

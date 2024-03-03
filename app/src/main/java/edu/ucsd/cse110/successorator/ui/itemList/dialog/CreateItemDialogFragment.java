@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.time.ZonedDateTime;
+
 import edu.ucsd.cse110.successorator.MainViewModel;
 
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
@@ -50,7 +52,8 @@ public class CreateItemDialogFragment extends DialogFragment {
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
-        var item = new Item(description, null, -1, false);
+        var item = new Item(description, null, -1, false,
+                            ZonedDateTime.now(), false);
         activityModel.append(item);
         dialog.dismiss();
     }

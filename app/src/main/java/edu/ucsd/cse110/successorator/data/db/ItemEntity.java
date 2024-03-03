@@ -3,13 +3,17 @@ package edu.ucsd.cse110.successorator.data.db;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.lib.domain.Item;
+import edu.ucsd.cse110.successorator.util.ZonedDateTimeConverter;
 
 @Entity(tableName = "items")
+@TypeConverters(ZonedDateTimeConverter.class)
 public class ItemEntity {
     @PrimaryKey(autoGenerate = true)
 
@@ -25,20 +29,32 @@ public class ItemEntity {
     @ColumnInfo(name = "is_done")
     public boolean isDone;
 
-    ItemEntity(@NonNull String description, int sortOrder, boolean isDone){
+    @ColumnInfo(name = "date")
+    public ZonedDateTime date;
+
+    @ColumnInfo(name = "is_recurring")
+    public boolean isRecurring;
+
+    ItemEntity(@NonNull String description, int sortOrder, boolean isDone,
+               ZonedDateTime date, boolean isRecurring){
         this.description = description;
         this.sortOrder = sortOrder;
         this.isDone = isDone;
+        this.date = date;
+        this.isRecurring = isRecurring;
     }
 
+    // Given an item create an ItemEntity
     public static ItemEntity fromItem(@NonNull Item item){
-        var task = new ItemEntity(item.getDescription(), item.sortOrder(), item.isDone());
+        var task = new ItemEntity(item.getDescription(), item.sortOrder(), item.isDone(),
+                                  item.getDate(), item.isRecurring());
         task.id = item.id();
         return task;
     }
 
+    // Create a new Item
     public @NonNull Item toItem(){
-        return new Item(description, id, sortOrder, isDone);
+        return new Item(description, id, sortOrder, isDone, date, isRecurring);
     }
 
 }
