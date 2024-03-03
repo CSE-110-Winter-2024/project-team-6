@@ -132,6 +132,15 @@ public class InMemoryDataSource {
         allItemsSubject.setValue(getItems());
     }
 
+    public void markRecurring(int id){
+        items.get(id).markRecurring();
+
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+
 
 
     public void shiftSortOrders(int from, int to, int by) {

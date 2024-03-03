@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.successorator;
 
+import android.content.SharedPreferences;
+
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -21,10 +23,8 @@ public class DateFormatter {
         // Offset the date
         this.clock = clock.minusHours(2);
 
-
         // FOR TESTING MOCK UI DATE; THE DATE ADVANCED WILL PERSIST AFTER THE APP IS PAUSED AND RESUMED
         this.clock = this.clock.plusDays(dateAdvance);
-
 
         // Offset 2 hours
         int month = this.clock.getMonthValue();

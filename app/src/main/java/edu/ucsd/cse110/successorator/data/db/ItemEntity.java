@@ -51,7 +51,11 @@ public class ItemEntity {
     // Given an item create an ItemEntity
     public static ItemEntity fromItem(@NonNull Item item){
         var task = new ItemEntity(item.getDescription(), item.sortOrder(), item.isDone(),
+<<<<<<< HEAD
                 item.getDate(), item.isRecurring(), item.getRecurringType());
+=======
+                                  item.getDate(), item.isRecurring(), item.getRecurringType());
+>>>>>>> origin/US2_Adding_Goals_Recurrence_Options
         task.id = item.id();
         return task;
     }

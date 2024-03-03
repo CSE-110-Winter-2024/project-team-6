@@ -1,4 +1,13 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +37,8 @@ public class ItemListFragment extends Fragment {
     private String formattedDate;
     private DateFormatter dateFormatter;
 
-    private String lastRecordedDate = "";
+    private SharedPreferences sharedPreferences;
+
     public ItemListFragment() {
         // Required empty public constructor
     }
@@ -85,6 +95,9 @@ public class ItemListFragment extends Fragment {
             // Set the adapter on the ListView
             view.cardList.setAdapter(adapter);
             dateText = this.view.dateView;
+
+            // Persistence of Date
+            sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
             view.addItem.setOnClickListener(v ->{
                 var dialogFragment = CreateRecurringItemDialogFragment.newInstance();
                 // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
@@ -93,7 +106,16 @@ public class ItemListFragment extends Fragment {
 
             // When pressing the add date button, the Date will advance by 24hrs
             view.addDay.setOnClickListener(v -> {
+
+                // Add day and format it
                 formattedDate = dateFormatter.addDay(ZonedDateTime.now());
+
+                // Save formatted date for persistence
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("formatted_date", formattedDate);
+                editor.apply();
+
+                // Update UI with formatted date
                 dateText.setText(formattedDate);
                 activityModel.removeAllComplete();
             });
@@ -104,10 +126,20 @@ public class ItemListFragment extends Fragment {
         super.onResume();
 
         // Get formatted date and display.
-        if (!(dateFormatter.getDate(ZonedDateTime.now()).equals(formattedDate))) {
+        String savedDate = sharedPreferences.getString("formatted_date", "ERR");
+
+        // Check for date changes
+        if (!(dateFormatter.getDate(ZonedDateTime.now()).equals(savedDate))) {
             activityModel.removeAllComplete();
             formattedDate = dateFormatter.getDate(ZonedDateTime.now());
+
+            // Edit date persistence
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("formatted_date", formattedDate);
+            editor.apply();
         }
-        dateText.setText(formattedDate);
+
+        // Set date text from last saved date
+        dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
     }
 }

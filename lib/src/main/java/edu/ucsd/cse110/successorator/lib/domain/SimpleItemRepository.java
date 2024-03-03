@@ -85,5 +85,8 @@ public class SimpleItemRepository implements ItemRepository {
         dataSource.markCompleteOrIncomplete(id);
     }
 
+    @Override
+    public void markRecurring(int id) { dataSource.markRecurring(id); }
+
 
 }
