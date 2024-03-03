@@ -58,6 +58,8 @@ public class TomorrowListFragment extends Fragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
 
         dateFormatter = new DateFormatter(ZonedDateTime.now());
+        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
+
 
 
     }
@@ -67,10 +69,25 @@ public class TomorrowListFragment extends Fragment {
                              Bundle savedInstanceState) {
         this.view = FragmentCardListBinding.inflate(inflater, container, false);
         dateText = this.view.dateView;
-        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
+
+
+
 
         // Persistence of Date
         sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+
+        //change the title to tomorrow
+        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
+
+        // Save formatted date for persistence
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("formatted_date", formattedDate);
+        editor.apply();
+
+        // Update UI with formatted date
+        dateText.setText(formattedDate);
+
+
         view.addItem.setOnClickListener(v ->{
             var dialogFragment = CreateItemDialogFragment.newInstance();
             // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
@@ -84,9 +101,9 @@ public class TomorrowListFragment extends Fragment {
             formattedDate = dateFormatter.addDay(ZonedDateTime.now());
 
             // Save formatted date for persistence
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("formatted_date", formattedDate);
-            editor.apply();
+            SharedPreferences.Editor editor1 = sharedPreferences.edit();
+            editor1.putString("formatted_date", formattedDate);
+            editor1.apply();
 
             // Update UI with formatted date
             dateText.setText(formattedDate);
