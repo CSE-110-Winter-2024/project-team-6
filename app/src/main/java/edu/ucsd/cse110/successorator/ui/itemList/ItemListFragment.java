@@ -1,11 +1,9 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+
+
+
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,17 +21,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
 
-import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
+import edu.ucsd.cse110.successorator.ui.itemList.dialog.Dropdown;
 
 public class ItemListFragment extends Fragment {
     private MainViewModel activityModel;
@@ -102,6 +98,7 @@ public class ItemListFragment extends Fragment {
 
             // Persistence of Date
             sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+
             view.addItem.setOnClickListener(v ->{
                 var dialogFragment = CreateItemDialogFragment.newInstance();
                 // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
@@ -123,7 +120,17 @@ public class ItemListFragment extends Fragment {
                 dateText.setText(formattedDate);
                 activityModel.removeAllComplete();
             });
-            return view.getRoot();
+            view.dropdownMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Dropdown dropdown = new Dropdown();
+                    dropdown.show(getChildFragmentManager(), "DropdownFragment");
+                }
+            });
+
+
+
+              return view.getRoot();
     }
     @Override
     public void onResume() {
@@ -132,9 +139,9 @@ public class ItemListFragment extends Fragment {
         String savedDate = sharedPreferences.getString("formatted_date", "ERR");
 
         // Check for date changes
-        if (!(dateFormatter.getDate(ZonedDateTime.now()).equals(savedDate))) {
+        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
             activityModel.removeAllComplete();
-            formattedDate = dateFormatter.getDate(ZonedDateTime.now());
+            formattedDate = dateFormatter.getTodaysDate(ZonedDateTime.now());
 
             // Edit date persistence
             SharedPreferences.Editor editor = sharedPreferences.edit();

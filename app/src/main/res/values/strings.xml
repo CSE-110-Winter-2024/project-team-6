@@ -6,4 +6,7 @@
     <string name="add_day_text"><![CDATA[>]]></string>
     <string name="no_tasks">No tasks to be done</string>
     <string name="add_task">+</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

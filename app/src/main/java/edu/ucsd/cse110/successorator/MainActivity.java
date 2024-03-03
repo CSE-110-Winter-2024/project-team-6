@@ -10,6 +10,11 @@ import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding view;
+
+    private boolean isShowingToday = true;
+    private boolean isShowingTomorrow = false;
+    private boolean isShowingPending = false;
+    private boolean isShowingRecurring = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
