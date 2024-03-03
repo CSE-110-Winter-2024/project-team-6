@@ -16,10 +16,8 @@ import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
-import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.Dropdown;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,13 +106,6 @@ public class TomorrowListFragment extends Fragment {
             // Update UI with formatted date
             dateText.setText(formattedDate);
             activityModel.removeAllComplete();
-        });
-        view.dropdownMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dropdown dropdown = new Dropdown();
-                dropdown.show(getChildFragmentManager(), "DropdownFragment");
-            }
         });
 
         return view.getRoot();

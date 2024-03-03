@@ -28,7 +28,6 @@ import edu.ucsd.cse110.successorator.MainViewModel;
 
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.Dropdown;
 
 public class ItemListFragment extends Fragment {
     private MainViewModel activityModel;
@@ -68,23 +67,6 @@ public class ItemListFragment extends Fragment {
         this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete);
 
 
-        activityModel.getOrderedCards().observe(cards -> {
-            if(cards == null) return;
-            adapter.clear();
-            adapter.addAll(new ArrayList<>(cards));
-            adapter.notifyDataSetChanged();
-            for(int i = 0; i < cards.size(); i++) {
-                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
-            }
-
-            if(activityModel.size() != 0){
-                view.placeholderText.setVisibility(View.GONE);
-            }
-            if(activityModel.size() == 0){
-                view.placeholderText.setVisibility(View.VISIBLE);
-            }
-        });
-
         dateFormatter = new DateFormatter(ZonedDateTime.now());
     }
 
@@ -120,17 +102,8 @@ public class ItemListFragment extends Fragment {
                 dateText.setText(formattedDate);
                 activityModel.removeAllComplete();
             });
-            view.dropdownMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Dropdown dropdown = new Dropdown();
-                    dropdown.show(getChildFragmentManager(), "DropdownFragment");
-                }
-            });
 
-
-
-              return view.getRoot();
+            return view.getRoot();
     }
     @Override
     public void onResume() {
@@ -151,5 +124,25 @@ public class ItemListFragment extends Fragment {
 
         // Set date text from last saved date
         dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        activityModel.getOrderedCards().observe(cards -> {
+            if(cards == null) return;
+            adapter.clear();
+            adapter.addAll(new ArrayList<>(cards));
+            adapter.notifyDataSetChanged();
+            for(int i = 0; i < cards.size(); i++) {
+                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
+            }
+
+            if(activityModel.size() != 0){
+                this.view.placeholderText.setVisibility(View.GONE);
+            }
+            if(activityModel.size() == 0){
+                this.view.placeholderText.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
