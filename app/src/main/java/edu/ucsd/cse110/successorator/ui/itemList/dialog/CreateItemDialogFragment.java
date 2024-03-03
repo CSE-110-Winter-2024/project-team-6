@@ -53,7 +53,7 @@ public class CreateItemDialogFragment extends DialogFragment {
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
         var item = new Item(description, null, -1, false,
-                            ZonedDateTime.now(), false);
+                            ZonedDateTime.now(), false, "NONE");
         activityModel.append(item);
         dialog.dismiss();
     }
