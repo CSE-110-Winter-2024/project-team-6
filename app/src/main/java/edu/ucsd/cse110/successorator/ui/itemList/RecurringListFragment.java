@@ -3,33 +3,31 @@ package edu.ucsd.cse110.successorator.ui.itemList;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import java.time.ZonedDateTime;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
-import edu.ucsd.cse110.successorator.R;
-import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
-import edu.ucsd.cse110.successorator.databinding.FragmentTomorrowListBinding;
+import edu.ucsd.cse110.successorator.databinding.FragmentPendingListBinding;
+import edu.ucsd.cse110.successorator.databinding.FragmentRecurringListBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.Dropdown;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TomorrowListFragment#newInstance} factory method to
+ * Use the {@link RecurringListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TomorrowListFragment extends Fragment {
+public class RecurringListFragment extends Fragment {
     private MainViewModel activityModel;
-    private FragmentTomorrowListBinding view;
+    private FragmentRecurringListBinding view;
     private ItemListAdapter adapter;
     private TextView dateText;
     private String formattedDate;
@@ -37,12 +35,12 @@ public class TomorrowListFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
 
-    public TomorrowListFragment() {
+    public RecurringListFragment() {
         // Required empty public constructor
     }
 
-    public static TomorrowListFragment newInstance() {
-        TomorrowListFragment fragment = new TomorrowListFragment();
+    public static RecurringListFragment newInstance() {
+        RecurringListFragment fragment = new RecurringListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -68,7 +66,7 @@ public class TomorrowListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.view = FragmentTomorrowListBinding.inflate(inflater, container, false);
+        this.view = FragmentRecurringListBinding.inflate(inflater, container, false);
         dateText = this.view.dateView;
 
 
