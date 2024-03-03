@@ -60,13 +60,15 @@ public interface ItemDao{
 
         // If no incomplete items were found, append the new item to the start of the list
         if (lastIncompleteIndex == -1) {
-            var newItem = new ItemEntity(item.description, item.sortOrder, item.isDone);
+            var newItem = new ItemEntity(item.description, item.sortOrder, item.isDone,
+                    item.date, item.isRecurring);
             return Math.toIntExact(insert(newItem));
         }
 
         // Append the new item after the last incomplete item
         shiftSortOrders(lastIncompleteSortOrder + 1, getMaxSortOrder(), 1);
-        var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1, item.isDone);
+        var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1,
+                item.isDone, item.date, item.isRecurring);
         return Math.toIntExact(insert(newItem));
     }
 
@@ -74,7 +76,8 @@ public interface ItemDao{
     default int prepend(ItemEntity item){
         shiftSortOrders(getMinSortOrder(), getMaxSortOrder(), 1);
         var newItem = new ItemEntity(
-                item.description, getMinSortOrder()-1, item.isDone
+                item.description, getMinSortOrder()-1, item.isDone,
+                item.date, item.isRecurring
         );
         return Math.toIntExact(insert(newItem));
     }
@@ -88,7 +91,6 @@ public interface ItemDao{
     @Query("UPDATE items SET is_done = ~is_done WHERE id = :id")
     void markCompleteOrIncomplete(int id);
 
-
+    @Query("UPDATE items SET is_recurring = ~is_recurring WHERE id = :id")
+    void markRecurringOrNonrecurring(int id);
 }
-
-

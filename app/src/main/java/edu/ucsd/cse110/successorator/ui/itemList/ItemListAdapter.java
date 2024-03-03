@@ -1,4 +1,5 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
+import java.time.ZonedDateTime;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -83,6 +84,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         // Populate the view with the flashcard's data.
         binding.cardFrontText.setText(flashcard.getDescription());
         return binding.getRoot();
+
     }
 
     // The below methods aren't strictly necessary, usually.

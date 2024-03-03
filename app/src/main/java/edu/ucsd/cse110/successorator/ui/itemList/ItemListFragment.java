@@ -1,11 +1,4 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,17 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.prefs.Preferences;
-
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
-
-import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
+import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateRecurringItemDialogFragment;
 
 public class ItemListFragment extends Fragment {
     private MainViewModel activityModel;
@@ -73,6 +60,7 @@ public class ItemListFragment extends Fragment {
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
+
             adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
             for(int i = 0; i < cards.size(); i++) {
@@ -98,7 +86,7 @@ public class ItemListFragment extends Fragment {
             view.cardList.setAdapter(adapter);
             dateText = this.view.dateView;
             view.addItem.setOnClickListener(v ->{
-                var dialogFragment = CreateItemDialogFragment.newInstance();
+                var dialogFragment = CreateRecurringItemDialogFragment.newInstance();
                 // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
                 dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
             });
@@ -114,6 +102,7 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         // Get formatted date and display.
         if (!(dateFormatter.getDate(ZonedDateTime.now()).equals(formattedDate))) {
             activityModel.removeAllComplete();
