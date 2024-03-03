@@ -1,11 +1,9 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+
+
+
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import android.os.Bundle;
@@ -14,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +23,11 @@ import androidx.lifecycle.ViewModelProvider;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
+
+import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateRecurringItemDialogFragment;
 
@@ -66,7 +68,7 @@ public class ItemListFragment extends Fragment {
 
         this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete);
 
-
+        
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
@@ -98,6 +100,7 @@ public class ItemListFragment extends Fragment {
 
             // Persistence of Date
             sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+
             view.addItem.setOnClickListener(v ->{
                 var dialogFragment = CreateRecurringItemDialogFragment.newInstance();
                 // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
@@ -119,6 +122,7 @@ public class ItemListFragment extends Fragment {
                 dateText.setText(formattedDate);
                 activityModel.removeAllComplete();
             });
+
             return view.getRoot();
     }
     @Override
@@ -129,9 +133,9 @@ public class ItemListFragment extends Fragment {
         String savedDate = sharedPreferences.getString("formatted_date", "ERR");
 
         // Check for date changes
-        if (!(dateFormatter.getDate(ZonedDateTime.now()).equals(savedDate))) {
+        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
             activityModel.removeAllComplete();
-            formattedDate = dateFormatter.getDate(ZonedDateTime.now());
+            formattedDate = dateFormatter.getTodaysDate(ZonedDateTime.now());
 
             // Edit date persistence
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -141,5 +145,25 @@ public class ItemListFragment extends Fragment {
 
         // Set date text from last saved date
         dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        activityModel.getOrderedCards().observe(cards -> {
+            if(cards == null) return;
+            adapter.clear();
+            adapter.addAll(new ArrayList<>(cards));
+            adapter.notifyDataSetChanged();
+            for(int i = 0; i < cards.size(); i++) {
+                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
+            }
+
+            if(activityModel.size() != 0){
+                this.view.placeholderText.setVisibility(View.GONE);
+            }
+            if(activityModel.size() == 0){
+                this.view.placeholderText.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }

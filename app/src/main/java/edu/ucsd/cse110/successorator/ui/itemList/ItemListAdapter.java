@@ -15,7 +15,7 @@ import androidx.core.util.Consumer;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
+import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 
 public class ItemListAdapter extends ArrayAdapter<Item> {
@@ -51,14 +51,14 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         assert flashcard != null;
 
         // Check if a view is being reused...
-        ItemCardBinding binding;
+        FragmentCardListBinding binding;
         if (convertView != null) {
             // if so, bind to it
-            binding = ItemCardBinding.bind(convertView);
+            binding = FragmentCardListBinding.bind(convertView);
         } else {
             // otherwise inflate a new view from our layout XML.
             var layoutInflater = LayoutInflater.from(getContext());
-            binding = ItemCardBinding.inflate(layoutInflater, parent, false);
+            binding = FragmentCardListBinding.inflate(layoutInflater, parent, false);
         }
 
         if(flashcard.isDone()){
