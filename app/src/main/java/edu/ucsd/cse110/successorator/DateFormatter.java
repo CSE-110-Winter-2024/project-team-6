@@ -1,7 +1,5 @@
 package edu.ucsd.cse110.successorator;
 
-import android.content.SharedPreferences;
-
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -17,6 +15,10 @@ public class DateFormatter {
         dateAdvance = 0;
     }
 
+    // Get the year to check for Yearly recurrence verification
+    public int getYear(ZonedDateTime clock) {
+        return clock.minusHours(2).getYear();
+    }
 
     // The formatted date is what is changed
     public String getDate(ZonedDateTime clock) {
