@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.ItemListFragment;
+import edu.ucsd.cse110.successorator.ui.itemList.PendingListFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.ReccurringListFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.TomorrowListFragment;
 
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_reccurring) {
             swapFragments(ReccurringListFragment.class);
+            return true;
+        } else if (id == R.id.action_pending) {
+            swapFragments(PendingListFragment.class);
             return true;
         }
         // Continue with other options...

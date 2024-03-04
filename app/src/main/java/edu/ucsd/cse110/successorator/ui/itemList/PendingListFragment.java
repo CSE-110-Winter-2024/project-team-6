@@ -18,15 +18,15 @@ import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentPendingListBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.Dropdown;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PendingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PendingListFragment extends Fragment {
-    private MainViewModel activityModel;
+public class PendingListFragment extends ParentFragment {
+    // private MainViewModel activityModel;
     private FragmentPendingListBinding view;
     private ItemListAdapter adapter;
     private TextView dateText;
@@ -50,14 +50,13 @@ public class PendingListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize the Model
-        var modelOwner = requireActivity();
-        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
-        this.activityModel = modelProvider.get(MainViewModel.class);
+//        // Initialize the Model
+//        var modelOwner = requireActivity();
+//        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+//        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+//        this.activityModel = modelProvider.get(MainViewModel.class);
 
         dateFormatter = new DateFormatter(ZonedDateTime.now());
-        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
 
 
 
@@ -76,7 +75,7 @@ public class PendingListFragment extends Fragment {
         sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
 
         //change the title to tomorrow
-        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
+        formattedDate = "Pending";
 
         // Save formatted date for persistence
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -108,33 +107,11 @@ public class PendingListFragment extends Fragment {
             dateText.setText(formattedDate);
             activityModel.removeAllComplete();
         });
-        view.dropdownMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dropdown dropdown = new Dropdown();
-                dropdown.show(getChildFragmentManager(), "DropdownFragment");
-            }
-        });
 
         return view.getRoot();
     }
     public void onResume() {
         super.onResume();
-        // Get formatted date and display.
-        String savedDate = sharedPreferences.getString("formatted_date", "ERR");
-
-        // Check for date changes
-//        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
-//            activityModel.removeAllComplete();
-//            formattedDate = dateFormatter.getTodaysDate(ZonedDateTime.now());
-//
-//            // Edit date persistence
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//            editor.putString("formatted_date", formattedDate);
-//            editor.apply();
-//        }
-
-        // Set date text from last saved date
         dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
     }
 }

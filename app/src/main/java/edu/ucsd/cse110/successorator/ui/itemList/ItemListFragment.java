@@ -31,8 +31,8 @@ import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateRecurringItemDialogFragment;
 
-public class ItemListFragment extends Fragment {
-    private MainViewModel activityModel;
+public class ItemListFragment extends ParentFragment {
+    //private MainViewModel activityModel;
     private FragmentCardListBinding view;
     private ItemListAdapter adapter;
     private TextView dateText;
@@ -56,11 +56,11 @@ public class ItemListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize the Model
-        var modelOwner = requireActivity();
-        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
-        this.activityModel = modelProvider.get(MainViewModel.class);
+//        // Initialize the Model
+//        var modelOwner = requireActivity();
+//        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+//        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+//        this.activityModel = modelProvider.get(MainViewModel.class);
 
 
         // Initialize the Adapter (with an empty list for now)
@@ -87,43 +87,48 @@ public class ItemListFragment extends Fragment {
             }
         });
 
-        dateFormatter = new DateFormatter(ZonedDateTime.now());
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            this.view = FragmentCardListBinding.inflate(inflater, container, false);
-            // Set the adapter on the ListView
-            view.cardList.setAdapter(adapter);
-            dateText = this.view.dateView;
 
-            // Persistence of Date
-            sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        //super.onCreateView(inflater, container, savedInstanceState);
 
-            view.addItem.setOnClickListener(v ->{
-                var dialogFragment = CreateRecurringItemDialogFragment.newInstance();
-                // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
-                dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
-            });
+        this.view = FragmentCardListBinding.inflate(inflater, container, false);
+        // Set the adapter on the ListView
+        view.cardList.setAdapter(adapter);
+        dateText = this.view.dateView;
 
-            // When pressing the add date button, the Date will advance by 24hrs
-            view.addDay.setOnClickListener(v -> {
+        dateFormatter = new DateFormatter(ZonedDateTime.now());
 
-                // Add day and format it
-                formattedDate = dateFormatter.addDay(ZonedDateTime.now());
+        // Persistence of Date
+        sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
 
-                // Save formatted date for persistence
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("formatted_date", formattedDate);
-                editor.apply();
+        view.addItem.setOnClickListener(v ->{
+            var dialogFragment = CreateItemDialogFragment.newInstance();
 
-                // Update UI with formatted date
-                dateText.setText(formattedDate);
-                activityModel.removeAllComplete();
-            });
+            dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
+        });
 
-            return view.getRoot();
+        // When pressing the add date button, the Date will advance by 24hrs
+        view.addDay.setOnClickListener(v -> {
+
+            // Add day and format it
+            formattedDate = dateFormatter.addDay(ZonedDateTime.now());
+
+            // Save formatted date for persistence
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("formatted_date", formattedDate);
+            editor.apply();
+
+            // Update UI with formatted date
+            dateText.setText(formattedDate);
+            activityModel.removeAllComplete();
+        });
+
+        return view.getRoot();
     }
     @Override
     public void onResume() {
