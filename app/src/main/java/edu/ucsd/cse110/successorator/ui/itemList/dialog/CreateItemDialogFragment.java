@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.time.ZonedDateTime;
 
+import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
 
 import edu.ucsd.cse110.successorator.R;
@@ -26,6 +27,8 @@ public class CreateItemDialogFragment extends DialogFragment {
     private FragmentDialogAddItemBinding view;
 
     private MainViewModel activityModel;
+
+    private DateFormatter dateFormatter;
 
     CreateItemDialogFragment() {
         // Empty required constructor
@@ -41,8 +44,15 @@ public class CreateItemDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        ZonedDateTime curr = ZonedDateTime.now();
+        dateFormatter = new DateFormatter(curr);
+
         this.view = FragmentDialogAddItemBinding.inflate(getLayoutInflater());
         view.NONE.setChecked(true);
+        // Set the text for radio buttons
+        view.WEEKLY.setText("Weekly on " + dateFormatter.weeklyDate(curr));
+        view.MONTHLY.setText("Monthly " + dateFormatter.monthlyDate(curr));
+        view.YEARLY.setText("Yearly on " + dateFormatter.yearlyDate(curr));
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")
