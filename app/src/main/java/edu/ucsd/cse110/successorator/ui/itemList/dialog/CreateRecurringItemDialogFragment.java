@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
@@ -55,20 +56,26 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
+
         ZonedDateTime startDate = ZonedDateTime.of(Integer.valueOf(view.yearInput.getText().toString()), Integer.valueOf(view.monthInput.getText().toString()), Integer.valueOf(view.dayInput.getText().toString()), 0, 0, 0, 0, ZoneId.of("UTC"));
+        DateFormatter dateFormatter = new DateFormatter(startDate);
         var item = new Item(description, null, -1, false,
                 ZonedDateTime.now(), false, "NONE");
 
         if(view.dailyBtn.isChecked()){
+            description += ", daily";
             item = new Item(description, null, -1, false,
                     startDate, true, "DAILY");
         }else if(view.weeklyBtn.isChecked()){
+            description += ", weekly on " +  startDate.getDayOfWeek().toString();
             item = new Item(description, null, -1, false,
                     startDate, true, "WEEKLY");
         }else if(view.monthlyBtn.isChecked()){
+            description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
             item = new Item(description, null, -1, false,
                     startDate, true, "MONTHLY");
         }else if(view.yearlyBtn.isChecked()){
+            description += ", yearly on " +  dateFormatter.yearlyDate(startDate);
             item = new Item(description, null, -1, false,
                     startDate, true, "YEARLY");
         }
