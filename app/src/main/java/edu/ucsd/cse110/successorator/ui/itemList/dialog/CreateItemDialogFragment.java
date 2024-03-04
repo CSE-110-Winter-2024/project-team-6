@@ -83,22 +83,25 @@ public class CreateItemDialogFragment extends DialogFragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
     }
-
     private Item makeRecurrenceItem(String description){
         Item returnitem;
         if (view.NONE.isChecked()){
             returnitem = new Item(description, null, -1, false,
                     ZonedDateTime.now(), false, "NONE");
         } else if (view.DAILY.isChecked()){
+            description += ", daily";
             returnitem = new Item(description, null, -1, false,
                     ZonedDateTime.now(), true, "DAILY");
         } else if (view.WEEKLY.isChecked()){
+            description += ", weekly on " +  ZonedDateTime.now().getDayOfWeek().toString();
             returnitem = new Item(description, null, -1, false,
                     ZonedDateTime.now(), true, "WEEKLY");
         } else if (view.MONTHLY.isChecked()){
+            description += ", monthly on " +  dateFormatter.monthlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
                     ZonedDateTime.now(), true, "MONTHLY");
         } else {
+            description += ", yearly on " +  dateFormatter.yearlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
                     ZonedDateTime.now(), true, "YEARLY");
         }

@@ -20,8 +20,10 @@ public class DateFormatter {
         return clock.minusHours(2).getYear();
     }
 
+
+
     // The formatted date is what is changed
-    public String getDate(ZonedDateTime clock) {
+    public String getTodaysDate(ZonedDateTime clock) {
         // Offset the date
         this.clock = clock.minusHours(2);
 
@@ -35,7 +37,25 @@ public class DateFormatter {
         String weekDay = this.clock.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
 
         // Return a formatted string for the date
-        String formattedDate = String.format("%s %d/%d", weekDay, month, day);
+        String formattedDate = String.format("Today %s %d/%d", weekDay, month, day);
+
+        return formattedDate;
+    }
+    public String getTomorrowsDate(ZonedDateTime clock) {
+        // Offset the date
+        this.clock = clock.minusHours(2);
+
+        // FOR TESTING MOCK UI DATE; THE DATE ADVANCED WILL PERSIST AFTER THE APP IS PAUSED AND RESUMED
+        this.clock = this.clock.plusDays(1);
+
+        // Offset 2 hours
+        int month = this.clock.getMonthValue();
+        int day = this.clock.getDayOfMonth();
+
+        String weekDay = this.clock.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+
+        // Return a formatted string for the date
+        String formattedDate = String.format("Tomorrow %s %d/%d", weekDay, month, day);
 
         return formattedDate;
     }
@@ -43,7 +63,7 @@ public class DateFormatter {
     // Functionality for Mock Date UI to update to next day
     public String addDay(ZonedDateTime clock) {
         dateAdvance++;
-        return getDate(clock);
+        return getTodaysDate(clock);
     }
 
     public String weeklyDate(ZonedDateTime clock) {

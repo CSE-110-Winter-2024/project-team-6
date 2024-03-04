@@ -60,7 +60,7 @@
         android:id="@+id/date_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/time_text"
+        android:text="Pending"
         android:textColor="#4800C8"
         android:textSize="30sp"
         android:textStyle="bold|italic"

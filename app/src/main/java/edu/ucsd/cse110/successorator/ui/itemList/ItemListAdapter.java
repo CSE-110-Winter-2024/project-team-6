@@ -1,4 +1,5 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
+import java.time.ZonedDateTime;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -24,19 +25,23 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
     Consumer<Item> prependClick;
     Consumer<Integer> strikethroughClick;
 
+    String fragment;
+
     public ItemListAdapter(
             Context context,
             List<Item> items,
             Consumer<Integer> onDeleteClick,
             Consumer<Item> appendClick,
             Consumer<Item> prependClick,
-            Consumer<Integer> strikethroughClick
+            Consumer<Integer> strikethroughClick,
+            String fragment
     ){
         super(context, 0, new ArrayList<>(items));
         this.onDeleteClick = onDeleteClick;
         this.appendClick = appendClick;
         this.prependClick = prependClick;
         this.strikethroughClick = strikethroughClick;
+        this.fragment = fragment;
 
     }
 
@@ -65,24 +70,31 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         }else{
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
-
-        binding.getRoot().setOnClickListener(v -> {
-            var id = flashcard.id();
-            assert id != null;
-            strikethroughClick.accept(id);
-            Log.d("MYTAG", flashcard.isDone() + " ");
-            getItem(position).markDone();
-            onDeleteClick.accept(id);
-            if(flashcard.isDone()) {
-                appendClick.accept(flashcard);
-            }else{
-                prependClick.accept(flashcard);
-            }
-        });
+        if(fragment.equals("HOME")) {
+            binding.getRoot().setOnClickListener(v -> {
+                var id = flashcard.id();
+                assert id != null;
+                strikethroughClick.accept(id);
+                getItem(position).markDone();
+                onDeleteClick.accept(id);
+                if (flashcard.isDone()) {
+                    appendClick.accept(flashcard);
+                } else {
+                    prependClick.accept(flashcard);
+                }
+            });
+        }else if(fragment.equals("RECURRING")){
+            binding.getRoot().setOnClickListener(v -> {
+                var id = flashcard.id();
+                assert id != null;
+                onDeleteClick.accept(id);
+            });
+        }
 
         // Populate the view with the flashcard's data.
         binding.cardFrontText.setText(flashcard.getDescription());
         return binding.getRoot();
+
     }
 
     // The below methods aren't strictly necessary, usually.

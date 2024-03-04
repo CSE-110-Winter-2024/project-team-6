@@ -61,7 +61,7 @@ public interface ItemDao{
         // If no incomplete items were found, append the new item to the start of the list
         if (lastIncompleteIndex == -1) {
             var newItem = new ItemEntity(item.description, item.sortOrder, item.isDone,
-                                         item.date, item.isRecurring, item.recurringType);
+                item.date, item.isRecurring, item.recurringType);
             return Math.toIntExact(insert(newItem));
         }
 
@@ -94,5 +94,3 @@ public interface ItemDao{
     @Query("UPDATE items SET is_recurring = ~is_recurring WHERE id = :id")
     void markRecurringOrNonrecurring(int id);
 }
-
-
