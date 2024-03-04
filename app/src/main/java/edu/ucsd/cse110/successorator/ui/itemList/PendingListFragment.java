@@ -18,6 +18,7 @@ import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentPendingListBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
+import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreatePendingItemDialogFragment;
 
 
 /**
@@ -87,9 +88,9 @@ public class PendingListFragment extends ParentFragment {
 
 
         view.addItem.setOnClickListener(v ->{
-            var dialogFragment = CreateItemDialogFragment.newInstance();
+            var dialogFragment = CreatePendingItemDialogFragment.newInstance();
             // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
-            dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
+            dialogFragment.show(getParentFragmentManager(),"CreatePendingItemDialogFragment");
         });
 
         // When pressing the add date button, the Date will advance by 24hrs
