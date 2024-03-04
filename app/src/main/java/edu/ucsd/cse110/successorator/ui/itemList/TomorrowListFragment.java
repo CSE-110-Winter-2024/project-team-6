@@ -57,7 +57,6 @@ public class TomorrowListFragment extends Fragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
 
         dateFormatter = new DateFormatter(ZonedDateTime.now());
-        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
 
 
 
@@ -113,21 +112,6 @@ public class TomorrowListFragment extends Fragment {
     }
     public void onResume() {
         super.onResume();
-        // Get formatted date and display.
-        String savedDate = sharedPreferences.getString("formatted_date", "ERR");
-
-        // Check for date changes
-//        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
-//            activityModel.removeAllComplete();
-//            formattedDate = dateFormatter.getTodaysDate(ZonedDateTime.now());
-//
-//            // Edit date persistence
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//            editor.putString("formatted_date", formattedDate);
-//            editor.apply();
-//        }
-
-        // Set date text from last saved date
         dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
     }
 }
