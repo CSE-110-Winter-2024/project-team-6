@@ -118,4 +118,12 @@ public class ItemTest {
 
         assertEquals(newDate, card.getDate());
     }
+
+    @Test
+    public void testRecurrenceType() {
+        var card = new Item("Recurrence Test", 0, 0, false,
+                mockTime, true, "WEEKLY");
+
+        assertEquals("WEEKLY", card.getRecurringType());
+    }
 }

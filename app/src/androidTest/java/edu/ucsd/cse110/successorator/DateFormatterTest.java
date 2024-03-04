@@ -67,4 +67,33 @@ public class DateFormatterTest {
         // Advance a whole day to ensure new date properly formatted.
         assertEquals("Friday 2/16", dt.addDay(testClock));
     }
+
+    @Test
+    public void testMonthlyDate() {
+        ZonedDateTime testClock = ZonedDateTime.of(2024, 3, 22, 3, 3, 2, 1234, ZoneId.of("UTC"));
+        DateFormatter dt = new DateFormatter(testClock);
+
+        assertEquals("4th Fri", dt.monthlyDate(testClock));
+
+        testClock = ZonedDateTime.of(2024, 3, 1, 3, 3, 2, 1234, ZoneId.of("UTC"));
+        assertEquals("1st Fri", dt.monthlyDate(testClock));
+    }
+
+    @Test
+    public void testYearlyDate() {
+        ZonedDateTime testClock = ZonedDateTime.of(2024, 3, 22, 3, 3, 2, 1234, ZoneId.of("UTC"));
+        DateFormatter dt = new DateFormatter(testClock);
+
+        assertEquals("3/22", dt.yearlyDate(testClock));
+    }
+
+    @Test
+    public void testWeeklyDate() {
+        ZonedDateTime testClock = ZonedDateTime.of(2024, 3, 22, 3, 3, 2, 1234, ZoneId.of("UTC"));
+        DateFormatter dt = new DateFormatter(testClock);
+
+        assertEquals("Fri", dt.weeklyDate(testClock));
+    }
+
+
 }

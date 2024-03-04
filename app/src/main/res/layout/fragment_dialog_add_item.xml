@@ -7,6 +7,7 @@
 
 
     <RadioGroup
+        android:id="@+id/Recurrence_options"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,14 +17,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"
-            android:text="Enter Text"
             android:textColor="@color/purple_700"
             android:textColorHint="#673AB7"
             android:textSize="24sp"
             android:textStyle="bold|italic" />
 
         <RadioButton
-            android:id="@+id/radioButton1"
+            android:id="@+id/NONE"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="One time"
@@ -31,7 +31,7 @@
             android:textStyle="bold"></RadioButton>
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/DAILY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Daily"
@@ -39,7 +39,7 @@
             android:textStyle="bold"></RadioButton>
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/WEEKLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Weekly"
@@ -47,7 +47,7 @@
             android:textStyle="bold"></RadioButton>
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/MONTHLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Monthly"
@@ -55,7 +55,7 @@
             android:textStyle="bold"></RadioButton>
 
         <RadioButton
-            android:id="@+id/radioButton5"
+            android:id="@+id/YEARLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Yearly"
