@@ -50,7 +50,7 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
         var item = new Item(description, null, -1, false,
-                ZonedDateTime.now(), false, "NONE");
+                ZonedDateTime.now(), false, "NONE", true);
         activityModel.append(item);
         dialog.dismiss();
     }

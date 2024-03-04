@@ -141,6 +141,15 @@ public class InMemoryDataSource {
         allItemsSubject.setValue(getItems());
     }
 
+    public void markPending(int id){
+        items.get(id).markPending();
+
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+
 
 
     public void shiftSortOrders(int from, int to, int by) {

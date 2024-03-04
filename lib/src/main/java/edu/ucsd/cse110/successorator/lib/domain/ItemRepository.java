@@ -28,4 +28,6 @@ public interface ItemRepository {
 
     void markRecurring(int id);
 
+    void markPending(int id);
+
 }

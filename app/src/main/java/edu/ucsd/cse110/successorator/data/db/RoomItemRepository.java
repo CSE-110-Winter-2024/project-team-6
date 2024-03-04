@@ -74,4 +74,7 @@ public class RoomItemRepository implements ItemRepository {
 
     @Override
     public void markRecurring(int id) {itemDao.markRecurringOrNonrecurring(id);}
+
+    @Override
+    public void markPending(int id) {itemDao.markPending(id);}
 }
