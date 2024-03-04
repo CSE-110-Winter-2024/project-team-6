@@ -56,17 +56,7 @@ public class ItemListFragment extends ParentFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        // Initialize the Model
-//        var modelOwner = requireActivity();
-//        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-//        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
-//        this.activityModel = modelProvider.get(MainViewModel.class);
-
-
-        // Initialize the Adapter (with an empty list for now)
-
-
-        this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete);
+        this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME");
 
         
         activityModel.getOrderedCards().observe(cards -> {
@@ -79,15 +69,13 @@ public class ItemListFragment extends ParentFragment {
                 Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
             }
 
-            if(activityModel.size() != 0){
+            if(activityModel.size() != 0 && view != null){
                 view.placeholderText.setVisibility(View.GONE);
             }
-            if(activityModel.size() == 0){
+            if(activityModel.size() == 0 && view != null){
                 view.placeholderText.setVisibility(View.VISIBLE);
             }
         });
-
-
     }
 
     @Nullable

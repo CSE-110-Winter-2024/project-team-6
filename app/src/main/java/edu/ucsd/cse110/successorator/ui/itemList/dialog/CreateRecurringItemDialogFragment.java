@@ -59,9 +59,9 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
         var item = new Item(description, null, -1, false,
                 ZonedDateTime.now(), false, "NONE");
 
-        if(view.oneTimeBtn.isChecked()){
+        if(view.dailyBtn.isChecked()){
             item = new Item(description, null, -1, false,
-                    startDate, false, "ONETIME");
+                    startDate, true, "DAILY");
         }else if(view.weeklyBtn.isChecked()){
             item = new Item(description, null, -1, false,
                     startDate, true, "WEEKLY");
