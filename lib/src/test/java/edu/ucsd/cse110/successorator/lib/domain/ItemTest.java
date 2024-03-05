@@ -130,6 +130,18 @@ public class ItemTest {
     }
 
     @Test
+    public void testPending() {
+        var card = new Item("Pending test", 0, 0, false,
+                mockTime, false, "NONE", false);
+
+        assertFalse(card.isPending());
+
+        card.markPending();
+
+        assertTrue(card.isPending());
+    }
+
+    @Test
     public void testItemBuilder() {
         ItemBuilder itemBuilder = new ItemBuilder();
 

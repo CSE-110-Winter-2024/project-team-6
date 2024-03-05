@@ -55,7 +55,7 @@ public class ItemEntity {
     // Given an item create an ItemEntity
     public static ItemEntity fromItem(@NonNull Item item){
         var task = new ItemEntity(item.getDescription(), item.sortOrder(), item.isDone(),
-                                  item.getDate(), item.isRecurring(), item.getRecurringType(), item.getPending());
+                                  item.getDate(), item.isRecurring(), item.getRecurringType(), item.isPending());
         task.id = item.id();
         return task;
     }

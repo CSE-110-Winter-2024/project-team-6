@@ -81,7 +81,7 @@ public class Item implements Serializable {
 
     public void setRecurringType(String recurringType) { this.recurringType = recurringType; }
 
-    public boolean getPending() { return this.pending; }
+    public boolean isPending() { return this.pending; }
 
     public void markPending() { this.pending = !this.pending; }
 
