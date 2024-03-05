@@ -16,9 +16,13 @@ import java.time.ZonedDateTime;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.PendingViewAddItemBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
+import edu.ucsd.cse110.successorator.lib.util.ItemBuilder;
 
 public class CreatePendingItemDialogFragment extends DialogFragment {
     private PendingViewAddItemBinding view;
+
+    // Create a ItemBuilder
+    private ItemBuilder itemBuilder;
 
     private MainViewModel activityModel;
 
@@ -38,6 +42,7 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         this.view = PendingViewAddItemBinding.inflate(getLayoutInflater());
 
+
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")
@@ -49,8 +54,12 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
-        var item = new Item(description, null, -1, false,
-                ZonedDateTime.now(), false, "NONE", true);
+
+        var item = itemBuilder.addDescription(description)
+                                .addDate(ZonedDateTime.now())
+                                .addPending(true)
+                                .build();
+
         activityModel.append(item);
         dialog.dismiss();
     }
@@ -62,6 +71,9 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        // Instantiate an ItemBuilder
+        this.itemBuilder = new ItemBuilder();
 
         var modelOwner = requireActivity();
         var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);

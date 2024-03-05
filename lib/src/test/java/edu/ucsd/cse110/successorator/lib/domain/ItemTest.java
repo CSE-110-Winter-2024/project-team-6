@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import edu.ucsd.cse110.successorator.lib.util.ItemBuilder;
+
 public class ItemTest {
 
     // Mock an instance of time for testing
@@ -15,7 +17,7 @@ public class ItemTest {
     @org.junit.Test
     public void getDescription() {
         var unexpected = new Item("Call Mom", 0, 0, false,
-                                  mockTime, false, "NONE");
+                                  mockTime, false, "NONE", false);
         var expected = "Call Mom";
         assertEquals(expected, unexpected.getDescription());
     }
@@ -23,9 +25,9 @@ public class ItemTest {
     @org.junit.Test
     public void isDone() {
         var unexpected = new Item("Call Mom", 0, 0, false, mockTime,
-                false, "NONE");
+                false, "NONE", false);
         var expected = new Item("Call Mom", 0, 0, false, mockTime,
-                false, "NONE");
+                false, "NONE", false);
         assertEquals(expected, unexpected);
         unexpected.markDone();
         expected.markDone();
@@ -35,9 +37,9 @@ public class ItemTest {
     @org.junit.Test
     public void markDone() {
         var unexpected = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         var expected = new Item("Call Mom", 0, 0, true,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         unexpected.markDone();
         assertEquals(expected, unexpected);
         unexpected.markDone();
@@ -48,9 +50,9 @@ public class ItemTest {
     @org.junit.Test
     public void setDescription() {
         var unexpected = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         var expected = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         unexpected.setDescription("Call Dad");
         expected.setDescription("Call Dad");
         assertEquals(expected, unexpected);
@@ -59,9 +61,9 @@ public class ItemTest {
     @Test
     public void testWithId() {
         var card = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         var expected = new Item("Call Mom", 42, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
 
         var actual = card.withId(42);
         assertEquals(expected, actual);
@@ -70,9 +72,9 @@ public class ItemTest {
     @Test
     public void testWithSortOrder() {
         var card = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         var expected = new Item("Call Mom", 0, 42, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
 
         var actual = card.withSortOrder(42);
         assertEquals(expected, actual);
@@ -81,11 +83,11 @@ public class ItemTest {
     @Test
     public void testEquals() {
         var card1 = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         var card2 = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
         var card3 = new Item("Call Mom", 1, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
 
 
         assertEquals(card1, card2);
@@ -95,7 +97,7 @@ public class ItemTest {
     @Test
     public void testRecurring() {
         var card = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
 
         assertFalse(card.isRecurring());
 
@@ -107,7 +109,7 @@ public class ItemTest {
     @Test
     public void testDate() {
         var card = new Item("Call Mom", 0, 0, false,
-                mockTime, false, "NONE");
+                mockTime, false, "NONE", false);
 
         assertEquals(mockTime, card.getDate());
 
@@ -122,8 +124,25 @@ public class ItemTest {
     @Test
     public void testRecurrenceType() {
         var card = new Item("Recurrence Test", 0, 0, false,
-                mockTime, true, "WEEKLY");
+                mockTime, true, "WEEKLY", false);
 
         assertEquals("WEEKLY", card.getRecurringType());
+    }
+
+    @Test
+    public void testItemBuilder() {
+        ItemBuilder itemBuilder = new ItemBuilder();
+
+        var expCard = new Item("Recurrence Test", null, 5, false,
+                mockTime, true, "WEEKLY", false);
+
+        var builderCard = itemBuilder.addDescription("Recurrence Test")
+                .addSortOrder(5)
+                .addDate(mockTime)
+                .addRecurring(true)
+                .addRecurringType("WEEKLY")
+                .build();
+
+        assertEquals(expCard, builderCard);
     }
 }
