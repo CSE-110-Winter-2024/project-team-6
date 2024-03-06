@@ -88,5 +88,8 @@ public class SimpleItemRepository implements ItemRepository {
     @Override
     public void markRecurring(int id) { dataSource.markRecurring(id); }
 
+    @Override
+    public void markPending(int id) { dataSource.markPending(id);}
+
 
 }
