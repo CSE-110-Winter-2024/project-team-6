@@ -58,10 +58,16 @@ public class ItemListFragment extends ParentFragment {
 
         this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME");
 
-        
+
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
+
+            for(int i = 0; i < cards.size(); i++){
+                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().getDayOfMonth()){
+                    adapter.add(cards.get(i));
+                }
+            }
 
             adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
@@ -118,6 +124,31 @@ public class ItemListFragment extends ParentFragment {
 
         return view.getRoot();
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        activityModel.getOrderedCards().observe(cards -> {
+            if(cards == null) return;
+            adapter.clear();
+            for(int i = 0; i < cards.size(); i++){
+                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().getDayOfMonth()){
+                    adapter.add(cards.get(i));
+                }
+            }
+            //adapter.addAll(new ArrayList<>(cards));
+            adapter.notifyDataSetChanged();
+            for(int i = 0; i < cards.size(); i++) {
+                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
+            }
+
+            if(activityModel.size() != 0){
+                this.view.placeholderText.setVisibility(View.GONE);
+            }
+            if(activityModel.size() == 0){
+                this.view.placeholderText.setVisibility(View.VISIBLE);
+            }
+        });
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -138,25 +169,5 @@ public class ItemListFragment extends ParentFragment {
 
         // Set date text from last saved date
         dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
-        activityModel.getOrderedCards().observe(cards -> {
-            if(cards == null) return;
-            adapter.clear();
-            adapter.addAll(new ArrayList<>(cards));
-            adapter.notifyDataSetChanged();
-            for(int i = 0; i < cards.size(); i++) {
-                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
-            }
-
-            if(activityModel.size() != 0){
-                this.view.placeholderText.setVisibility(View.GONE);
-            }
-            if(activityModel.size() == 0){
-                this.view.placeholderText.setVisibility(View.VISIBLE);
-            }
-        });
     }
 }

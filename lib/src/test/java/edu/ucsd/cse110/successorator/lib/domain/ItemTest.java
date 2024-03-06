@@ -13,6 +13,7 @@ public class ItemTest {
 
     // Mock an instance of time for testing
     private ZonedDateTime mockTime = ZonedDateTime.now();
+    private ZonedDateTime tomorrowTime = ZonedDateTime.now().plusDays(1);
 
     @org.junit.Test
     public void getDescription() {
@@ -139,6 +140,15 @@ public class ItemTest {
         card.markPending();
 
         assertTrue(card.isPending());
+    }
+
+    @Test
+    public void testTomorrow(){
+        var card = new Item("Pending test", 0, 0, false,
+                tomorrowTime, false, "NONE", false);
+
+        assertEquals(card.getDate().getDayOfMonth(),ZonedDateTime.now().plusDays(1).getDayOfMonth());
+
     }
 
     @Test
