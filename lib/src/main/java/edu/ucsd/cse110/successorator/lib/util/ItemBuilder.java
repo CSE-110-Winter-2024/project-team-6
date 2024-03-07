@@ -3,6 +3,7 @@ package edu.ucsd.cse110.successorator.lib.util;
 import androidx.annotation.Nullable;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 
@@ -29,11 +30,17 @@ public class ItemBuilder {
     private boolean pending;
 
     public ItemBuilder() {
+
+        // A default date that will never equal present
+        String dateTimeString = "2000-03-03T12:00:00-05:00";
+        ZonedDateTime defaultDate = ZonedDateTime.parse(dateTimeString,
+                DateTimeFormatter.ISO_ZONED_DATE_TIME);
+
         this.description = "";
         this.sortOrder = -1;
         this.id = null;
         this.done = false;
-        this.date = ZonedDateTime.now();
+        this.date = defaultDate;
         this.recurring = false;
         this.recurringType = "NONE";
         this.pending = false;

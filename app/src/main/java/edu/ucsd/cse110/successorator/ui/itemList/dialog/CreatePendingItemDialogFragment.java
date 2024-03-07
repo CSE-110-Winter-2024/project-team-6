@@ -56,7 +56,6 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
         var description = view.editTextDialog.getText().toString();
 
         var item = itemBuilder.addDescription(description)
-                                .addDate(ZonedDateTime.now())
                                 .addPending(true)
                                 .build();
 
