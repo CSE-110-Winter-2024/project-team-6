@@ -27,13 +27,19 @@ public class SuccessoratorApplication extends Application {
                 .build();
         this.itemRepository = new RoomItemRepository(database.itemDao());
 
-        var sharedPreferences = getSharedPreferences("successorator", MODE_PRIVATE);
-        var isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
+        var sharedPreferences1 = getSharedPreferences("successorator", MODE_PRIVATE);
+        var sharedPreferences2 = getSharedPreferences("formatted_date", MODE_PRIVATE);
+        var isFirstRun = sharedPreferences1.getBoolean("isFirstRun", true);
+
+        // When restarting application, should reset any artificially set time.
+        sharedPreferences2.edit()
+                .putInt("advance_count", 0)
+                .apply();
 
         if(isFirstRun && database.itemDao().count() == 0){
             itemRepository.save(InMemoryDataSource.DEFAULT_CARDS);
 
-            sharedPreferences.edit()
+            sharedPreferences1.edit()
                     .putBoolean("isFirstRun", false)
                     .apply();
         }

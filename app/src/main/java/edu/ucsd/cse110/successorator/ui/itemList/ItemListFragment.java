@@ -39,6 +39,9 @@ public class ItemListFragment extends ParentFragment {
     private String formattedDate;
     private DateFormatter dateFormatter;
 
+    // Track days to artificially advance
+    private int advanceCount;
+
     private SharedPreferences sharedPreferences;
 
     public ItemListFragment() {
@@ -58,13 +61,16 @@ public class ItemListFragment extends ParentFragment {
 
         this.adapter = new ItemListAdapter(requireContext(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME");
 
+        // Persistence of Date
+        sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        advanceCount = sharedPreferences.getInt("advance_count", 0);
 
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
 
             for(int i = 0; i < cards.size(); i++){
-                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().getDayOfMonth()){
+                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().plusDays(advanceCount).getDayOfMonth()){
                     adapter.add(cards.get(i));
                 }
             }
@@ -97,10 +103,7 @@ public class ItemListFragment extends ParentFragment {
 
         dateFormatter = new DateFormatter(ZonedDateTime.now());
 
-        // Persistence of Date
-        sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
-
-        view.addItem.setOnClickListener(v ->{
+        view.addItem.setOnClickListener(v -> {
             var dialogFragment = CreateItemDialogFragment.newInstance();
 
             dialogFragment.show(getParentFragmentManager(),"CreateItemDialogFragment");
@@ -108,17 +111,20 @@ public class ItemListFragment extends ParentFragment {
 
         // When pressing the add date button, the Date will advance by 24hrs
         view.addDay.setOnClickListener(v -> {
+            // Get number of dates to advance
+            advanceCount = sharedPreferences.getInt("advance_count", 0) + 1;
 
-            // Add day and format it
-            formattedDate = dateFormatter.addDay(ZonedDateTime.now());
+            // Apply the number of advanced days to the current date
+            String formattedDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
 
             // Save formatted date for persistence
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("formatted_date", formattedDate);
+            editor.putString("formatted_date_today", formattedDate);
+            editor.putInt("advance_count", advanceCount);
             editor.apply();
 
             // Update UI with formatted date
-            dateText.setText(formattedDate);
+            dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
             activityModel.removeAllComplete();
         });
 
@@ -154,20 +160,26 @@ public class ItemListFragment extends ParentFragment {
         super.onResume();
 
         // Get formatted date and display.
-        String savedDate = sharedPreferences.getString("formatted_date", "ERR");
+        String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");
+        int advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Apply the number of advanced days to the current date
+        String currDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
 
         // Check for date changes
-        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
+        if (!(currDate.equals(savedDate))) {
             activityModel.removeAllComplete();
-            formattedDate = dateFormatter.getTodaysDate(ZonedDateTime.now());
+
+            // Display the formatted date
+            formattedDate = dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount));
 
             // Edit date persistence
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("formatted_date", formattedDate);
+            editor.putString("formatted_date_today", currDate);
             editor.apply();
         }
 
         // Set date text from last saved date
-        dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
+        dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
     }
 }

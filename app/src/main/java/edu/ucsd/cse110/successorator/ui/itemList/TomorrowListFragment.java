@@ -90,9 +90,6 @@ public class TomorrowListFragment extends ParentFragment {
         });
 
         dateFormatter = new DateFormatter(ZonedDateTime.now());
-
-
-
     }
 
     @Override
@@ -102,18 +99,16 @@ public class TomorrowListFragment extends ParentFragment {
         view.cardList.setAdapter(adapter);
         dateText = this.view.dateView;
 
-
-
-
         // Persistence of Date
         sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        int advanceCount = sharedPreferences.getInt("advance_count", 0);
 
         //change the title to tomorrow
-        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
+        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount));
 
         // Save formatted date for persistence
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("formatted_date", formattedDate);
+        editor.putString("formatted_date_tomorrow", formattedDate);
         editor.apply();
 
         // Update UI with formatted date
@@ -124,22 +119,6 @@ public class TomorrowListFragment extends ParentFragment {
             var dialogFragment = CreateTomorrowItemDialogFragment.newInstance();
             // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
             dialogFragment.show(getParentFragmentManager(),"CreateTomorrowItemDialogFragment");
-        });
-
-        // When pressing the add date button, the Date will advance by 24hrs
-        view.addDay.setOnClickListener(v -> {
-
-            // Add day and format it
-            formattedDate = dateFormatter.addDay(ZonedDateTime.now());
-
-            // Save formatted date for persistence
-            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putString("formatted_date", formattedDate);
-            editor1.apply();
-
-            // Update UI with formatted date
-            dateText.setText(formattedDate);
-            activityModel.removeAllComplete();
         });
 
         return view.getRoot();
@@ -169,20 +148,25 @@ public class TomorrowListFragment extends ParentFragment {
     }
     public void onResume() {
         super.onResume();
-        // Get formatted date and display.
-        String savedDate = sharedPreferences.getString("formatted_date", "ERR");
+        // Get formatted date and display, the saved date for current day
+        String savedDateForTodayView = sharedPreferences.getString("formatted_date_today", "ERR");
+        int advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        String currTodayDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
 
         // Check for date changes
-        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
+        if (!(currTodayDate.equals(savedDateForTodayView))) {
             activityModel.removeAllComplete();
-            formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
+
+            // Format a string for tomorrow's date
+            formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount + 1));
 
             // Edit date persistence
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("formatted_date", formattedDate);
+            editor.putString("formatted_date_today", currTodayDate);
             editor.apply();
         }
 
-        dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
+        dateText.setText(dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount)));
     }
 }
