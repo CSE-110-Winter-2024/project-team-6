@@ -96,6 +96,7 @@ public class PendingListFragment extends ParentFragment {
             if(cards == null) return;
             adapter.clear();
             for(int i = 0; i < cards.size(); i++){
+                //Log.d("IS_PENDING", cards.get(i).isPending() + " " + cards.get(i).getDescription());
                 if(cards.get(i).isPending()){
                     adapter.add(cards.get(i));
                 }
