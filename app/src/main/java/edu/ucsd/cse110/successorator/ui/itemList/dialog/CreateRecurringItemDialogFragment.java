@@ -44,7 +44,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         this.view = RecurringViewAddItemBinding.inflate(getLayoutInflater());
-        this.view.weeklyBtn.setChecked(true);
+        this.view.WEEKLY.setChecked(true);
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")
@@ -62,19 +62,19 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
         var item = new Item(description, null, -1, false,
                 ZonedDateTime.now(), false, "NONE", false);
 
-        if(view.dailyBtn.isChecked()){
+        if(view.DAILY.isChecked()){
             description += ", daily";
             item = new Item(description, null, -1, false,
                     startDate, true, "DAILY", false);
-        }else if(view.weeklyBtn.isChecked()){
+        }else if(view.WEEKLY.isChecked()){
             description += ", weekly on " +  startDate.getDayOfWeek().toString();
             item = new Item(description, null, -1, false,
                     startDate, true, "WEEKLY", false);
-        }else if(view.monthlyBtn.isChecked()){
+        }else if(view.MONTHLY.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
             item = new Item(description, null, -1, false,
                     startDate, true, "MONTHLY",false );
-        }else if(view.yearlyBtn.isChecked()){
+        }else if(view.YEARLY.isChecked()){
             description += ", yearly on " +  dateFormatter.yearlyDate(startDate);
             item = new Item(description, null, -1, false,
                     startDate, true, "YEARLY",false);
