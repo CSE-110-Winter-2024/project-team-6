@@ -41,7 +41,7 @@ public class RecurringListFragment extends ParentFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.adapter = new ItemListAdapter(requireContext(), List.of(), id ->{
+        this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), id ->{
             var dialogFragment = ConfirmDeleteCardDialogFragment.newInstance(id);
             dialogFragment.show(getParentFragmentManager(), "ConfirmDeleteCardDialogFragment");
         }, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "RECURRING");

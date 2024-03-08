@@ -20,10 +20,10 @@ import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentPendingListBinding;
+import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.ConfirmDeleteCardDialogFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreatePendingItemDialogFragment;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,10 +51,7 @@ public class PendingListFragment extends ParentFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO: MODIFY THIS TO DO PENDING FUNCTIONALITY INSTEAD OF RECURRING FUNCTIONALITY
-        this.adapter = new ItemListAdapter(requireContext(), List.of(), id ->{
-            var dialogFragment = ConfirmDeleteCardDialogFragment.newInstance(id);
-            dialogFragment.show(getParentFragmentManager(), "ConfirmDeleteCardDialogFragment");
-        }, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "PENDING");
+        this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "PENDING");
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
@@ -120,4 +117,5 @@ public class PendingListFragment extends ParentFragment {
     public void onResume() {
         super.onResume();
     }
+
 }

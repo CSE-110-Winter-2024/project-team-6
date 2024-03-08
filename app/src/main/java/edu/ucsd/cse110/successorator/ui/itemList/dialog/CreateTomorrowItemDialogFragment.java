@@ -93,23 +93,23 @@ public class CreateTomorrowItemDialogFragment extends DialogFragment {
         Item returnitem;
         if (view.NONE.isChecked()){
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), false, "NONE", false);
+                    ZonedDateTime.now().plusDays(1), false, "NONE", false, false);
         } else if (view.DAILY.isChecked()){
             description += ", daily";
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "DAILY",false );
+                    ZonedDateTime.now().plusDays(1), true, "DAILY",false, false );
         } else if (view.WEEKLY.isChecked()){
             description += ", weekly on " +  ZonedDateTime.now().getDayOfWeek().toString();
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "WEEKLY",false);
+                    ZonedDateTime.now().plusDays(1), true, "WEEKLY",false, false);
         } else if (view.MONTHLY.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "MONTHLY",false);
+                    ZonedDateTime.now().plusDays(1), true, "MONTHLY",false, false);
         } else {
             description += ", yearly on " +  dateFormatter.yearlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "YEARLY",false);
+                    ZonedDateTime.now().plusDays(1), true, "YEARLY",false, false);
         }
         return returnitem;
     }

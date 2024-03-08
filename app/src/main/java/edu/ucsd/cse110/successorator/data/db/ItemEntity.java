@@ -41,8 +41,12 @@ public class ItemEntity {
     @ColumnInfo(name = "is_pending")
     public boolean isPending;
 
+    @ColumnInfo(name = "is_deleted")
+    public boolean isDeleted;
+
     ItemEntity(@NonNull String description, int sortOrder, boolean isDone,
-               ZonedDateTime date, boolean isRecurring, String recurringType, boolean isPending){
+               ZonedDateTime date, boolean isRecurring, String recurringType, boolean isPending,
+               boolean isDeleted){
         this.description = description;
         this.sortOrder = sortOrder;
         this.isDone = isDone;
@@ -55,14 +59,15 @@ public class ItemEntity {
     // Given an item create an ItemEntity
     public static ItemEntity fromItem(@NonNull Item item){
         var task = new ItemEntity(item.getDescription(), item.sortOrder(), item.isDone(),
-                                  item.getDate(), item.isRecurring(), item.getRecurringType(), item.isPending());
+                                  item.getDate(), item.isRecurring(), item.getRecurringType(), item.isPending(),
+                                  item.isDeleted());
         task.id = item.id();
         return task;
     }
 
     // Create a new Item
     public @NonNull Item toItem(){
-        return new Item(description, id, sortOrder, isDone, date, isRecurring, recurringType, isPending);
+        return new Item(description, id, sortOrder, isDone, date, isRecurring, recurringType, isPending, isDeleted);
     }
 
 }
