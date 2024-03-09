@@ -150,6 +150,14 @@ public class InMemoryDataSource {
         allItemsSubject.setValue(getItems());
     }
 
+    public void markTomorrow(int id){
+        items.get(id).markTomorrow();
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+
 
 
     public void shiftSortOrders(int from, int to, int by) {

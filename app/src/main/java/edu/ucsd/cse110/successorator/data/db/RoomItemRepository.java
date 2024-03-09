@@ -72,9 +72,14 @@ public class RoomItemRepository implements ItemRepository {
     @Override
     public void removeAllComplete(){itemDao.removeAllComplete();};
 
+
     @Override
     public void markRecurring(int id) {itemDao.markRecurringOrNonrecurring(id);}
 
     @Override
     public void markPending(int id) {itemDao.markPending(id);}
+
+    @Override
+    public void markTomorrow(int id){itemDao.markTomorrow(id);}
+
 }

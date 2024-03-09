@@ -23,6 +23,7 @@ import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentTomorrowListBinding;
+import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateTomorrowItemDialogFragment;
 
@@ -111,6 +112,7 @@ public class TomorrowListFragment extends ParentFragment {
 
         // Update UI with formatted date
         dateText.setText(formattedDate);
+        updateFragment();
 
         view.addItem.setOnClickListener(v ->{
             var dialogFragment = CreateTomorrowItemDialogFragment.newInstance();
@@ -136,7 +138,6 @@ public class TomorrowListFragment extends ParentFragment {
         // Check for date changes
         if (!(currTodayDate.equals(savedDateForTodayView))) {
             activityModel.removeAllComplete();
-
             // Format a string for tomorrow's date
             formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount + 1));
 
@@ -154,15 +155,36 @@ public class TomorrowListFragment extends ParentFragment {
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
+            ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount + 1);
             for(int i = 0; i < cards.size(); i++){
-                //Log.d("onResumeTomorrow", "Card Date: " + cards.get(i).getDate().getDayOfMonth() + " Tomorrow Date: " + String.valueOf(ZonedDateTime.now().plusDays(advanceCount + 1).getDayOfMonth()) + " " + cards.get(i).getDescription());
-                if(cards.get(i).getDate().getDayOfMonth() ==
-                    ZonedDateTime.now().plusDays(advanceCount + 1).getDayOfMonth() &&
-                    !cards.get(i).isPending()){
-                    adapter.add(cards.get(i));
+                if(!cards.get(i).isPending()) {
+                    if(cards.get(i).isRecurring() ){
+                        //If the card is recurring then we want to display it if its not already finished and its past or equal to start date
+                        if(!cards.get(i).isDone() && (tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())){
+                            adapter.add(cards.get(i));
+                        }else {
+                            //We also want to display it if the recurring date comes again
+                            //If it is finished already we want to unfinish it and display it, otherwise just display
+                            if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
+                                adapter.add(cards.get(i));
+                                //add all monthly recurring tasks recurring today
+                            } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
+                                adapter.add(cards.get(i));
+                                //add all daily recurring tasks
+                            } else if (cards.get(i).getRecurringType().equals("DAILY")) {
+                                adapter.add(cards.get(i));
+                            } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
+                                adapter.add(cards.get(i));
+                            }
+                        }
+                    }else{
+                        //DISPLAY if its a tomorrow task
+                        if(cards.get(i).isTomorrow()){
+                            adapter.add(cards.get(i));
+                        }
+                    }
                 }
             }
-            //adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
             for(int i = 0; i < cards.size(); i++) {
                 Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
@@ -176,4 +198,5 @@ public class TomorrowListFragment extends ParentFragment {
             }
         });
     }
+
 }

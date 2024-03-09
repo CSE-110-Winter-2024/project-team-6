@@ -32,9 +32,9 @@ public class ItemRepoTest {
         // Add some items to the DataSource
         List<Item> items = new ArrayList<>();
         items.add(new Item("Item 1", 1, 1, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Item 2", 2, 2, true,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         dataSource.putItems(items);
 
         // Call the findAll method
@@ -48,7 +48,7 @@ public class ItemRepoTest {
     public void testSave() {
         // Create a new item
         Item item = new Item("Test Item", 1, 1, false,
-                mockTime, false, "NONE", false);
+                mockTime, false, "NONE", false, false);
 
         // Call the save method
         itemRepository.save(item);
@@ -62,9 +62,9 @@ public class ItemRepoTest {
         // Create a list of items
         List<Item> items = new ArrayList<>();
         items.add(new Item("Item 1", 1, 1, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Item 2", 2, 2, true,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
 
         // Call the save method with the list
         itemRepository.save(items);
@@ -77,7 +77,7 @@ public class ItemRepoTest {
     public void testRemove() {
         // Add an item to the DataSource
         Item item = new Item("Test Item", 1, 1, false,
-                mockTime, false, "NONE", false);
+                mockTime, false, "NONE", false, false);
         dataSource.putItem(item);
 
         // Call the remove method
@@ -92,11 +92,11 @@ public class ItemRepoTest {
         // Add some items to the DataSource
         List<Item> items = new ArrayList<>();
         items.add(new Item("Item 1", 1, 1, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Item 2", 2, 2, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Item 3", 3, 3, true,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         dataSource.putItems(items);
 
         // Call the size method
@@ -112,14 +112,14 @@ public class ItemRepoTest {
         List<Item> items = new ArrayList<>();
 
         items.add(new Item("Complete Item 1", 1, 1, true,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Complete Item 2", 2, 2, true,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         dataSource.putItems(items);
 
         // Call the append method with a new item
         itemRepository.append(new Item("New Item", 3, 3, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
 
         // Verify that the new item was not added (no incomplete items)
         assertEquals(2, dataSource.getItems().size());
@@ -130,14 +130,14 @@ public class ItemRepoTest {
         // Add some items to the DataSource (one incomplete and one complete)
         List<Item> items = new ArrayList<>();
         items.add(new Item("Incomplete Item", 1, 1, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Complete Item", 2, 2, true,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         dataSource.putItems(items);
 
         // Call the append method with a new incomplete item
         itemRepository.append(new Item("New Incomplete Item", 3, 3, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
 
         // Verify that the new item was added with the correct sort order
         assertEquals(3, dataSource.getItems().size());
@@ -153,14 +153,14 @@ public class ItemRepoTest {
         itemRepository = new SimpleItemRepository(dataSource);
 
         items.add(new Item("Item 1", 1, 1, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         items.add(new Item("Item 2", 2, 2, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
         dataSource.putItems(items);
 
         // Call the prepend method with a new item
         itemRepository.prepend(new Item("New Item", 3, 0, false,
-                mockTime, false, "NONE", false));
+                mockTime, false, "NONE", false, false));
 
 
         // Verify that the new item was added with the correct sort order
@@ -173,7 +173,7 @@ public class ItemRepoTest {
     public void testMarkCompleteOrIncomplete() {
         // Add an incomplete item to the DataSource
         Item item = new Item("Incomplete Item", 1, 1, false,
-                mockTime, false, "NONE", false);
+                mockTime, false, "NONE", false, false);
         dataSource.putItem(item);
 
         // Call the markCompleteOrIncomplete method
@@ -187,7 +187,7 @@ public class ItemRepoTest {
     public void testMarkRecurring() {
         // Add an incomplete item to the DataSource
         Item item = new Item("Test Item", 1, 1, false,
-               mockTime, false, "NONE", false);
+               mockTime, false, "NONE", false, false);
         dataSource.putItem(item);
 
         // Call the markCompleteOrIncomplete method
@@ -200,9 +200,9 @@ public class ItemRepoTest {
     @Test
     public void testRemoveComplete(){
         Item item = new Item("complete Item", 1, 1, true,
-                mockTime, false, "NONE", false);
+                mockTime, false, "NONE", false, false);
         Item item2 = new Item("Incomplete Item", 1, 1, false,
-                mockTime, false, "NONE", false);
+                mockTime, false, "NONE", false, false);
         dataSource.putItem(item);
         dataSource.putItem(item2);
 
@@ -214,7 +214,7 @@ public class ItemRepoTest {
 
         //Test with multiple completed Items
         Item item3 = new Item("Complete Item", 2, 2, true,
-                mockTime, false, "NONE", false);
+                mockTime, false, "NONE", false, false);
         dataSource.putItem(item);
         dataSource.putItem(item2);
         dataSource.putItem(item3);
