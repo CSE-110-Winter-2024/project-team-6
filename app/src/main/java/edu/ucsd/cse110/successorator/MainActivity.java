@@ -15,6 +15,7 @@ import edu.ucsd.cse110.successorator.ui.itemList.PendingListFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.RecurringListFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.TomorrowListFragment;
 
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding view;

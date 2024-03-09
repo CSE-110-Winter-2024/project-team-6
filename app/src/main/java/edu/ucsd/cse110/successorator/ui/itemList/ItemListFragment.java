@@ -25,11 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
-import edu.ucsd.cse110.successorator.MainViewModel;
 
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
-import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateRecurringItemDialogFragment;
 
 public class ItemListFragment extends ParentFragment {
     //private MainViewModel activityModel;
@@ -70,10 +68,17 @@ public class ItemListFragment extends ParentFragment {
             adapter.clear();
 
             for(int i = 0; i < cards.size(); i++){
-                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().plusDays(advanceCount).getDayOfMonth()){
+                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().plusDays(advanceCount).getDayOfMonth()
+                        && !cards.get(i).isPending()){
+                    Log.d("Card onResume", "card day of month: " +
+                            String.valueOf(cards.get(i).getDate().getDayOfMonth()) +
+                            " Curr Month: " +
+                            ZonedDateTime.now().plusDays(advanceCount).getDayOfMonth() +
+                            " " + cards.get(i).getDescription());
                     adapter.add(cards.get(i));
                 }
             }
+
 
             adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
@@ -126,6 +131,8 @@ public class ItemListFragment extends ParentFragment {
             // Update UI with formatted date
             dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
             activityModel.removeAllComplete();
+
+            updateFragment();
         });
 
         return view.getRoot();
@@ -133,27 +140,7 @@ public class ItemListFragment extends ParentFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
-        activityModel.getOrderedCards().observe(cards -> {
-            if(cards == null) return;
-            adapter.clear();
-            for(int i = 0; i < cards.size(); i++){
-                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().getDayOfMonth()){
-                    adapter.add(cards.get(i));
-                }
-            }
-            //adapter.addAll(new ArrayList<>(cards));
-            adapter.notifyDataSetChanged();
-            for(int i = 0; i < cards.size(); i++) {
-                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
-            }
 
-            if(activityModel.size() != 0){
-                this.view.placeholderText.setVisibility(View.GONE);
-            }
-            if(activityModel.size() == 0){
-                this.view.placeholderText.setVisibility(View.VISIBLE);
-            }
-        });
     }
     @Override
     public void onResume() {
@@ -162,6 +149,9 @@ public class ItemListFragment extends ParentFragment {
         // Get formatted date and display.
         String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");
         int advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Determine which goals to load
+        updateFragment();
 
         // Apply the number of advanced days to the current date
         String currDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
@@ -181,5 +171,34 @@ public class ItemListFragment extends ParentFragment {
 
         // Set date text from last saved date
         dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
+    }
+
+    // Determine which goals to load associated with the date
+    public void updateFragment() {
+        activityModel.getOrderedCards().observe(cards -> {
+            if(cards == null) return;
+            adapter.clear();
+
+            for(int i = 0; i < cards.size(); i++){
+                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().plusDays(advanceCount).getDayOfMonth()
+                        && !cards.get(i).isPending()){
+                    adapter.add(cards.get(i));
+                }
+            }
+
+
+            //adapter.addAll(new ArrayList<>(cards));
+            adapter.notifyDataSetChanged();
+            for(int i = 0; i < cards.size(); i++) {
+                Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
+            }
+
+            if(activityModel.size() != 0 && view != null){
+                view.placeholderText.setVisibility(View.GONE);
+            }
+            if(activityModel.size() == 0 && view != null){
+                view.placeholderText.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
