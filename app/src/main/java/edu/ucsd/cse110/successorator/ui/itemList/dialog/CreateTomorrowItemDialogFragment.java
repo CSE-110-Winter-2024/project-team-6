@@ -59,6 +59,8 @@ public class CreateTomorrowItemDialogFragment extends DialogFragment {
         view.WEEKLY.setText("Weekly on " + dateFormatter.weeklyDate(curr));
         view.MONTHLY.setText("Monthly " + dateFormatter.monthlyDate(curr));
         view.YEARLY.setText("Yearly on " + dateFormatter.yearlyDate(curr));
+
+        view.HOUSE.setChecked(true);
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")

@@ -41,6 +41,7 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         this.view = PendingViewAddItemBinding.inflate(getLayoutInflater());
+        view.HOUSE.setChecked(true);
 
 
         return new AlertDialog.Builder(getActivity())

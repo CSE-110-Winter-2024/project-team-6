@@ -45,6 +45,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         this.view = RecurringViewAddItemBinding.inflate(getLayoutInflater());
         this.view.weeklyBtn.setChecked(true);
+        view.HOUSE.setChecked(true);
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")

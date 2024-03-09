@@ -9,13 +9,15 @@
     <RadioGroup
         android:id="@+id/Tags"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/HOUSE"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="#FFEB3B"
             android:text="House" />
 
         <RadioButton
@@ -23,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:buttonTint="#2196F3"
             android:text="Work" />
 
         <RadioButton
@@ -30,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:buttonTint="#E91E63"
             android:text="School" />
 
         <RadioButton
@@ -37,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:buttonTint="#4CAF50"
             android:text="Errands" />
     </RadioGroup>
 
