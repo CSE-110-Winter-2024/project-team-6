@@ -87,23 +87,23 @@ public class CreateItemDialogFragment extends DialogFragment {
         Item returnitem;
         if (view.NONE.isChecked()){
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), false, "NONE", false, false);
+                    ZonedDateTime.now(), false, "NONE", false);
         } else if (view.DAILY.isChecked()){
             description += ", daily";
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "DAILY",false, false );
+                    ZonedDateTime.now(), true, "DAILY",false);
         } else if (view.WEEKLY.isChecked()){
             description += ", weekly on " +  ZonedDateTime.now().getDayOfWeek().toString();
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "WEEKLY",false, false);
+                    ZonedDateTime.now(), true, "WEEKLY",false);
         } else if (view.MONTHLY.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "MONTHLY",false, false);
+                    ZonedDateTime.now(), true, "MONTHLY",false);
         } else {
             description += ", yearly on " +  dateFormatter.yearlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "YEARLY",false, false);
+                    ZonedDateTime.now(), true, "YEARLY",false);
         }
         return returnitem;
     }

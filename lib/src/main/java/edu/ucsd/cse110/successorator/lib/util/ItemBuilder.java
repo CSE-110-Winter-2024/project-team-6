@@ -81,6 +81,6 @@ public class ItemBuilder {
     }
 
     public Item build() {
-        return new Item(description, id, sortOrder, done, date, recurring, recurringType, pending, deleted);
+        return new Item(description, id, sortOrder, done, date, recurring, recurringType, pending);
     }
 }

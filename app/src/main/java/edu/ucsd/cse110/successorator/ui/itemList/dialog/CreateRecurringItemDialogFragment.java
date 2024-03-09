@@ -60,24 +60,24 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
         ZonedDateTime startDate = ZonedDateTime.of(Integer.valueOf(view.yearInput.getText().toString()), Integer.valueOf(view.monthInput.getText().toString()), Integer.valueOf(view.dayInput.getText().toString()), 0, 0, 0, 0, ZoneId.of("UTC"));
         DateFormatter dateFormatter = new DateFormatter(startDate);
         var item = new Item(description, null, -1, false,
-                ZonedDateTime.now(), false, "NONE", false, false);
+                ZonedDateTime.now(), false, "NONE", false);
 
         if(view.dailyBtn.isChecked()){
             description += ", daily";
             item = new Item(description, null, -1, false,
-                    startDate, true, "DAILY", false, false);
+                    startDate, true, "DAILY", false);
         }else if(view.weeklyBtn.isChecked()){
             description += ", weekly on " +  startDate.getDayOfWeek().toString();
             item = new Item(description, null, -1, false,
-                    startDate, true, "WEEKLY", false, false);
+                    startDate, true, "WEEKLY", false);
         }else if(view.monthlyBtn.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
             item = new Item(description, null, -1, false,
-                    startDate, true, "MONTHLY",false, false );
+                    startDate, true, "MONTHLY",false);
         }else if(view.yearlyBtn.isChecked()){
             description += ", yearly on " +  dateFormatter.yearlyDate(startDate);
             item = new Item(description, null, -1, false,
-                    startDate, true, "YEARLY",false, false);
+                    startDate, true, "YEARLY",false);
         }
         activityModel.append(item);
         dialog.dismiss();

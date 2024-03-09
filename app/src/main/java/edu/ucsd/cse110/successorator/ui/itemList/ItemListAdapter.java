@@ -106,9 +106,6 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
                 return true;
             });
-            if(flashcard.isDeleted()){
-                onDeleteClick.accept(flashcard.id());
-            }
         }
 
         // Populate the view with the flashcard's data.

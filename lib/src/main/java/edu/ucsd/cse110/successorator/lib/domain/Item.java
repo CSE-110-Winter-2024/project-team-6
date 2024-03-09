@@ -22,11 +22,10 @@ public class Item implements Serializable {
     private String recurringType;
 
     private boolean pending;
-    private boolean deleted;
+
 
     public Item(String description, @Nullable Integer id, int sortOrder, boolean done,
-                ZonedDateTime date, boolean recurring, String recurringType, boolean pending,
-                boolean deleted){
+                ZonedDateTime date, boolean recurring, String recurringType, boolean pending){
         this.sortOrder = sortOrder;
         this.id = id;
         this.description = description;
@@ -35,7 +34,7 @@ public class Item implements Serializable {
         this.recurring = recurring;
         this.recurringType = recurringType;
         this.pending = pending;
-        this.deleted = deleted;
+
     }
 
     public @Nullable Integer id() {
@@ -48,12 +47,12 @@ public class Item implements Serializable {
 
     public Item withSortOrder(int sortOrder) {
         return new Item(this.description, this.id, sortOrder, this.done, this.date,
-                this.recurring, this.recurringType, this.pending, this.deleted);
+                this.recurring, this.recurringType, this.pending);
     }
 
     public Item withId(int id) {
         return new Item(this.description, id, this.sortOrder, this.done, this.date,
-                this.recurring, this.recurringType, this.pending, this.deleted);
+                this.recurring, this.recurringType, this.pending);
     }
 
     public String getDescription(){
@@ -87,8 +86,7 @@ public class Item implements Serializable {
     public boolean isPending() { return this.pending; }
 
     public void markPending() { this.pending = !this.pending; }
-    public boolean isDeleted(){ return  this.deleted; }
-    public void markDeleted() {this.deleted = !this.deleted; }
+
 
     @Override
     public boolean equals(Object o) {
@@ -99,8 +97,8 @@ public class Item implements Serializable {
                 Objects.equals(description, item.description) &&
                 Objects.equals(id, item.id) && Objects.equals(date, item.date) &&
                 recurring == item.recurring && Objects.equals(recurringType, item.recurringType) &&
-                pending == item.pending &&
-                deleted == item.deleted;
+                pending == item.pending;
+
 
     }
 
