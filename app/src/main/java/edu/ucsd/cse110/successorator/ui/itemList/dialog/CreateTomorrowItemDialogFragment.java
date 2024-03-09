@@ -97,7 +97,7 @@ public class CreateTomorrowItemDialogFragment extends DialogFragment {
         } else if (view.DAILY.isChecked()){
             description += ", daily";
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "DAILY",false );
+                    ZonedDateTime.now().plusDays(1), true, "DAILY",false);
         } else if (view.WEEKLY.isChecked()){
             description += ", weekly on " +  ZonedDateTime.now().getDayOfWeek().toString();
             returnitem = new Item(description, null, -1, false,

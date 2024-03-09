@@ -23,6 +23,7 @@ public class Item implements Serializable {
 
     private boolean pending;
 
+
     public Item(String description, @Nullable Integer id, int sortOrder, boolean done,
                 ZonedDateTime date, boolean recurring, String recurringType, boolean pending){
         this.sortOrder = sortOrder;
@@ -33,6 +34,7 @@ public class Item implements Serializable {
         this.recurring = recurring;
         this.recurringType = recurringType;
         this.pending = pending;
+
     }
 
     public @Nullable Integer id() {
@@ -85,6 +87,7 @@ public class Item implements Serializable {
 
     public void markPending() { this.pending = !this.pending; }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,6 +98,8 @@ public class Item implements Serializable {
                 Objects.equals(id, item.id) && Objects.equals(date, item.date) &&
                 recurring == item.recurring && Objects.equals(recurringType, item.recurringType) &&
                 pending == item.pending;
+
+
     }
 
     @Override

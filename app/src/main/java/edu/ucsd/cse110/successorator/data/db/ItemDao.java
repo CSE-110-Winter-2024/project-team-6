@@ -68,7 +68,8 @@ public interface ItemDao{
         // Append the new item after the last incomplete item
         shiftSortOrders(lastIncompleteSortOrder + 1, getMaxSortOrder(), 1);
         var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1,
-                                     item.isDone, item.date, item.isRecurring, item.recurringType, item.isPending);
+                                     item.isDone, item.date, item.isRecurring, item.recurringType,
+                                     item.isPending);
         return Math.toIntExact(insert(newItem));
     }
 
@@ -96,4 +97,6 @@ public interface ItemDao{
 
     @Query("UPDATE items SET is_pending = ~is_pending WHERE id = :id")
     void markPending(int id);
+
+
 }
