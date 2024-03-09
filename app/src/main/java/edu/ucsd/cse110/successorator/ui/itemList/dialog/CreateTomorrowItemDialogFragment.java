@@ -2,7 +2,9 @@ package edu.ucsd.cse110.successorator.ui.itemList.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,6 +38,9 @@ public class CreateTomorrowItemDialogFragment extends DialogFragment {
 
     private DateFormatter dateFormatter;
 
+    private SharedPreferences sharedPreferences;
+
+    private int advanceCount;
     CreateTomorrowItemDialogFragment() {
         // Empty required constructor
     }
@@ -50,7 +55,11 @@ public class CreateTomorrowItemDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        ZonedDateTime curr = ZonedDateTime.now();
+        sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Consider the advanced days
+        ZonedDateTime curr = ZonedDateTime.now().plusDays(advanceCount + 1);
         dateFormatter = new DateFormatter(curr);
 
         this.view = FragmentDialogAddItemBinding.inflate(getLayoutInflater());
@@ -90,26 +99,32 @@ public class CreateTomorrowItemDialogFragment extends DialogFragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
     }
     private Item makeRecurrenceItem(String description){
+        sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Consider the advanced days
+        ZonedDateTime curr = ZonedDateTime.now().plusDays(advanceCount + 1);
+
         Item returnitem;
         if (view.NONE.isChecked()){
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), false, "NONE", false);
+                    curr, false, "NONE", false);
         } else if (view.DAILY.isChecked()){
             description += ", daily";
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "DAILY",false );
+                    curr, true, "DAILY",false );
         } else if (view.WEEKLY.isChecked()){
             description += ", weekly on " +  ZonedDateTime.now().getDayOfWeek().toString();
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "WEEKLY",false);
+                    curr, true, "WEEKLY",false);
         } else if (view.MONTHLY.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "MONTHLY",false);
+                    curr, true, "MONTHLY",false);
         } else {
             description += ", yearly on " +  dateFormatter.yearlyDate(ZonedDateTime.now());
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now().plusDays(1), true, "YEARLY",false);
+                    curr, true, "YEARLY",false);
         }
         return returnitem;
     }
