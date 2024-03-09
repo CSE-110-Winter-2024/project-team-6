@@ -44,6 +44,8 @@ public class ItemListFragment extends ParentFragment {
     // Track days to artificially advance
     private int advanceCount;
 
+    private boolean firstRun = true;
+
     private SharedPreferences sharedPreferences;
 
     public ItemListFragment() {
@@ -66,8 +68,15 @@ public class ItemListFragment extends ParentFragment {
         // Persistence of Date
         sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
         advanceCount = sharedPreferences.getInt("advance_count", 0);
+        if(activityModel.getOrderedCards().getValue() == null){
 
-        finishRecurringTasks();
+        }
+        activityModel.getOrderedCards().observe(cards -> {
+            if(cards != null && firstRun) {
+                finishRecurringTasks();
+                firstRun = false;
+            }
+        });
         updateFragment();
     }
 
@@ -158,7 +167,6 @@ public class ItemListFragment extends ParentFragment {
 
     // Determine which goals to load associated with the date
     public void finishRecurringTasks(){
-
         List<Item> cards = activityModel.getOrderedCards().getValue();
             if (cards == null) {
                 return;
