@@ -88,14 +88,24 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
         // Naive implementation of adding tags.
 
-        // House by default
-        binding.cardFrontText.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+        // Home by default
+        binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
 
-        /*
-        if (flashcard.getTag() == HOME) {
-            binding.cardFrontText.setBackground();
+
+        if (flashcard.getCategory().equals("HOME")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+            binding.TAG.setText("H");
+        } else if (flashcard.getCategory().equals("WORK")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
+            binding.TAG.setText("W");
+        } else if (flashcard.getCategory().equals("SCHOOL")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
+            binding.TAG.setText("S");
+        } else if (flashcard.getCategory().equals("ERRAND")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
+            binding.TAG.setText("S");
         }
-         */
+
 
         if(fragment.equals("HOME")) {
             binding.getRoot().setOnClickListener(v -> {
