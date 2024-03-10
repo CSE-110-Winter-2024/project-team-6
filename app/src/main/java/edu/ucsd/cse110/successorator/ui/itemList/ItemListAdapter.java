@@ -29,14 +29,12 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
     Consumer<Integer> strikethroughClick;
 
     String fragment;
-    FragmentManager fragmentManager;
 
 
     Context context;
 
     public ItemListAdapter(
             Context context,
-            FragmentManager fragmentManager,
             List<Item> items,
             Consumer<Integer> onDeleteClick,
             Consumer<Item> appendClick,
