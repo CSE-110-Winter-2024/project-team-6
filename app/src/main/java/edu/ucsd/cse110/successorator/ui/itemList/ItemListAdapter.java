@@ -97,8 +97,6 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                 return true;
             });
         } else if (fragment.equals("PENDING")){
-            // TODO: Note that current functionality is duplicate of Recurring;
-            // TODO: Currently placeholder for functionality to be implementing in US9
             binding.getRoot().setOnLongClickListener(v -> {
                 var id = flashcard.id();
                 assert id != null;
