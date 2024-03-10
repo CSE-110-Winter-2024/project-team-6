@@ -23,6 +23,7 @@ import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
+import edu.ucsd.cse110.successorator.lib.util.ItemBuilder;
 
 
 public class CreateItemDialogFragment extends DialogFragment {
@@ -35,6 +36,8 @@ public class CreateItemDialogFragment extends DialogFragment {
     private SharedPreferences sharedPreferences;
 
     private int advanceCount;
+
+    private ItemBuilder itemBuilder;
 
     CreateItemDialogFragment() {
         // Empty required constructor
@@ -65,7 +68,7 @@ public class CreateItemDialogFragment extends DialogFragment {
         view.MONTHLY.setText("Monthly " + dateFormatter.monthlyDate(curr));
         view.YEARLY.setText("Yearly on " + dateFormatter.yearlyDate(curr));
 
-        view.HOUSE.setChecked(true);
+        view.HOME.setChecked(true);
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")
@@ -91,6 +94,8 @@ public class CreateItemDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
+        itemBuilder = new ItemBuilder();
+
         var modelOwner = requireActivity();
         var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
@@ -104,26 +109,41 @@ public class CreateItemDialogFragment extends DialogFragment {
         ZonedDateTime curr = ZonedDateTime.now().plusDays(advanceCount);
 
         Item returnitem;
-        if (view.NONE.isChecked()){
-            returnitem = new Item(description, null, -1, false,
-                    curr, false, "NONE", false, false);
-        } else if (view.DAILY.isChecked()){
+        boolean recurBool = false;
+        String recurringChoice = "NONE";
+        String categoryChoice = "HOME";
+
+        if (view.DAILY.isChecked()){
             description += ", daily";
-            returnitem = new Item(description, null, -1, false,
-                    curr, true, "DAILY",false , false);
+            recurringChoice = "DAILY";
+            recurBool = true;
         } else if (view.WEEKLY.isChecked()){
+            recurBool = true;
             description += ", weekly on " +  curr.getDayOfWeek().toString();
-            returnitem = new Item(description, null, -1, false,
-                    curr, true, "WEEKLY",false, false);
+            recurringChoice = "WEEKLY";
         } else if (view.MONTHLY.isChecked()){
+            recurBool = true;
             description += ", monthly on " +  dateFormatter.monthlyDate(curr);
-            returnitem = new Item(description, null, -1, false,
-                    curr, true, "MONTHLY",false, false);
-        } else {
+            recurringChoice = "MONTHLY";
+        } else if (view.YEARLY.isChecked()) {
+            recurBool = true;
             description += ", yearly on " +  dateFormatter.yearlyDate(curr);
-            returnitem = new Item(description, null, -1, false,
-                    curr, true, "YEARLY",false, false);
+            recurringChoice = "YEARLY";
         }
+
+        if (view.HOME.isChecked()) {
+            categoryChoice = "HOME";
+        } else if (view.ERRANDS.isChecked()) {
+            categoryChoice = "ERRAND";
+        } else if (view.SCHOOL.isChecked()) {
+            categoryChoice = "SCHOOL";
+        } else {
+            categoryChoice = "WORK";
+        }
+
+        returnitem = itemBuilder.addDescription(description).addDate(curr).addRecurring(recurBool)
+                                .addRecurringType(recurringChoice).addCategory(categoryChoice).build();
+
         return returnitem;
     }
 
