@@ -167,4 +167,23 @@ public class ItemTest {
 
         assertEquals(expCard, builderCard);
     }
+
+    @Test
+    public void testCategory() {
+        var item1 = new Item("Pending test", 0, 0, false,
+                tomorrowTime, false, "NONE", false, false, "HOME");
+        assertEquals(item1.getCategory(), "HOME");
+
+        var item2 = new Item("Pending test", 0, 0, false,
+                tomorrowTime, false, "NONE", false, false, "WORK");
+        assertEquals(item2.getCategory(), "WORK");
+
+        var item3 = new Item("Pending test", 0, 0, false,
+                tomorrowTime, false, "NONE", false, false, "ERRAND");
+        assertEquals(item3.getCategory(), "ERRAND");
+
+        var item4 = new Item("Pending test", 0, 0, false,
+                tomorrowTime, false, "NONE", false, false, "SCHOOL");
+        assertEquals(item4.getCategory(), "SCHOOL");
+    }
 }
