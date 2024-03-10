@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import edu.ucsd.cse110.successorator.databinding.ActivityMainBinding;
 import edu.ucsd.cse110.successorator.ui.itemList.ItemListFragment;
@@ -14,6 +15,7 @@ import edu.ucsd.cse110.successorator.ui.itemList.PendingListFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.RecurringListFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.TomorrowListFragment;
 
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding view;
@@ -73,9 +75,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null) // Optional: Add transaction to back stack
+            // Get transaction
+            FragmentTransaction fragTrans = getSupportFragmentManager().beginTransaction();
+            // Get current fragment
+            Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+            if (currFrag != null) {
+                fragTrans.detach(currFrag);
+            }
+
+            // Add the new fragment to the container if it's not already added
+            if (!fragment.isAdded()) {
+                fragTrans.add(R.id.fragment_container, fragment);
+            }
+
+            fragTrans.attach(fragment)
                     .commit();
         }
     }

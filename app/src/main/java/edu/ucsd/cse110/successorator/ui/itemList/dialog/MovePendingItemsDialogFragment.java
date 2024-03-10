@@ -14,14 +14,11 @@ import java.time.ZonedDateTime;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.MovingPendingItemsBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
-import edu.ucsd.cse110.successorator.lib.util.ItemBuilder;
 
 public class MovePendingItemsDialogFragment extends DialogFragment {
     private MovingPendingItemsBinding view;
     private MainViewModel activityModel;
     static Item item;
-    private ItemBuilder itemBuilder;
-    private Item optionItem;
 
     MovePendingItemsDialogFragment(){
 
@@ -74,7 +71,9 @@ public class MovePendingItemsDialogFragment extends DialogFragment {
             activityModel.append(item);
 
         }else if (view.moveToFinish.isChecked()){
+            item.setDate(ZonedDateTime.now());
             item.markDone();
+            item.markPending();
             activityModel.remove(item.id());
             activityModel.append(item);
 
