@@ -65,7 +65,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             binding = ItemCardBinding.inflate(layoutInflater, parent, false);
         }
 
-        if(flashcard.isDone()){
+        if(flashcard.isDone() && !fragment.equals("RECURRING")){
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else{
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
