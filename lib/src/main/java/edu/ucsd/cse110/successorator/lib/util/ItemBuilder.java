@@ -29,6 +29,10 @@ public class ItemBuilder {
     private boolean pending;
     private boolean deleted;
 
+    private boolean tomorrow;
+
+    private boolean show;
+
     public ItemBuilder() {
         this.description = "";
         this.sortOrder = -1;
@@ -38,7 +42,8 @@ public class ItemBuilder {
         this.recurring = false;
         this.recurringType = "NONE";
         this.pending = false;
-        this.deleted = false;
+        this.tomorrow = false;
+        this.show = true;
     }
 
     public ItemBuilder addDescription(String description) {
@@ -81,6 +86,6 @@ public class ItemBuilder {
     }
 
     public Item build() {
-        return new Item(description, id, sortOrder, done, date, recurring, recurringType, pending);
+        return new Item(description, id, sortOrder, done, date, recurring, recurringType, pending, tomorrow);
     }
 }

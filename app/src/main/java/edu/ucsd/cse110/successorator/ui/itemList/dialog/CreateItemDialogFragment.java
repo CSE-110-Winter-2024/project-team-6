@@ -2,7 +2,9 @@ package edu.ucsd.cse110.successorator.ui.itemList.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -30,6 +32,10 @@ public class CreateItemDialogFragment extends DialogFragment {
 
     private DateFormatter dateFormatter;
 
+    private SharedPreferences sharedPreferences;
+
+    private int advanceCount;
+
     CreateItemDialogFragment() {
         // Empty required constructor
     }
@@ -44,7 +50,12 @@ public class CreateItemDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        ZonedDateTime curr = ZonedDateTime.now();
+
+        sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Consider the advanced days
+        ZonedDateTime curr = ZonedDateTime.now().plusDays(advanceCount);
         dateFormatter = new DateFormatter(curr);
 
         this.view = FragmentDialogAddItemBinding.inflate(getLayoutInflater());
@@ -84,26 +95,32 @@ public class CreateItemDialogFragment extends DialogFragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
     }
     private Item makeRecurrenceItem(String description){
+        sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Consider the advanced days
+        ZonedDateTime curr = ZonedDateTime.now().plusDays(advanceCount);
+
         Item returnitem;
         if (view.NONE.isChecked()){
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), false, "NONE", false);
+                    curr, false, "NONE", false, false);
         } else if (view.DAILY.isChecked()){
             description += ", daily";
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "DAILY",false);
+                    curr, true, "DAILY",false , false);
         } else if (view.WEEKLY.isChecked()){
-            description += ", weekly on " +  ZonedDateTime.now().getDayOfWeek().toString();
+            description += ", weekly on " +  curr.getDayOfWeek().toString();
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "WEEKLY",false);
+                    curr, true, "WEEKLY",false, false);
         } else if (view.MONTHLY.isChecked()){
-            description += ", monthly on " +  dateFormatter.monthlyDate(ZonedDateTime.now());
+            description += ", monthly on " +  dateFormatter.monthlyDate(curr);
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "MONTHLY",false);
+                    curr, true, "MONTHLY",false, false);
         } else {
-            description += ", yearly on " +  dateFormatter.yearlyDate(ZonedDateTime.now());
+            description += ", yearly on " +  dateFormatter.yearlyDate(curr);
             returnitem = new Item(description, null, -1, false,
-                    ZonedDateTime.now(), true, "YEARLY",false);
+                    curr, true, "YEARLY",false, false);
         }
         return returnitem;
     }

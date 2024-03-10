@@ -23,6 +23,7 @@ import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentTomorrowListBinding;
+import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateTomorrowItemDialogFragment;
 
@@ -40,6 +41,8 @@ public class TomorrowListFragment extends ParentFragment {
     private DateFormatter dateFormatter;
 
     private SharedPreferences sharedPreferences;
+
+    private int advanceCount;
 
     public TomorrowListFragment() {
         // Required empty public constructor
@@ -62,7 +65,7 @@ public class TomorrowListFragment extends ParentFragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
 
-        this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME");
+        this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "TOMORROW");
 
 
         activityModel.getOrderedCards().observe(cards -> {
@@ -89,10 +92,6 @@ public class TomorrowListFragment extends ParentFragment {
             }
         });
 
-        dateFormatter = new DateFormatter(ZonedDateTime.now());
-
-
-
     }
 
     @Override
@@ -101,24 +100,19 @@ public class TomorrowListFragment extends ParentFragment {
         this.view = FragmentTomorrowListBinding.inflate(inflater, container, false);
         view.cardList.setAdapter(adapter);
         dateText = this.view.dateView;
-
-
-
+        // Set up a DateFormatter
+        dateFormatter = new DateFormatter(ZonedDateTime.now());
 
         // Persistence of Date
         sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        int advanceCount = sharedPreferences.getInt("advance_count", 0);
 
         //change the title to tomorrow
-        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
-
-        // Save formatted date for persistence
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("formatted_date", formattedDate);
-        editor.apply();
+        formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount));
 
         // Update UI with formatted date
         dateText.setText(formattedDate);
-
+        updateFragment();
 
         view.addItem.setOnClickListener(v ->{
             var dialogFragment = CreateTomorrowItemDialogFragment.newInstance();
@@ -126,34 +120,73 @@ public class TomorrowListFragment extends ParentFragment {
             dialogFragment.show(getParentFragmentManager(),"CreateTomorrowItemDialogFragment");
         });
 
-        // When pressing the add date button, the Date will advance by 24hrs
-        view.addDay.setOnClickListener(v -> {
-
-            // Add day and format it
-            formattedDate = dateFormatter.addDay(ZonedDateTime.now());
-
-            // Save formatted date for persistence
-            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putString("formatted_date", formattedDate);
-            editor1.apply();
-
-            // Update UI with formatted date
-            dateText.setText(formattedDate);
-            activityModel.removeAllComplete();
-        });
-
         return view.getRoot();
     }
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+    }
+    public void onResume() {
+        super.onResume();
+        // Get formatted date and display, the saved date for current day
+        String savedDateForTodayView = sharedPreferences.getString("formatted_date_today", "ERR");
+        advanceCount = sharedPreferences.getInt("advance_count", 0);
+
+        // Determine which goals to load dependent on the date
+        updateFragment();
+
+        String currTodayDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
+
+        // Check for date changes
+        if (!(currTodayDate.equals(savedDateForTodayView))) {
+            activityModel.removeAllComplete();
+            // Format a string for tomorrow's date
+            formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount + 1));
+
+            // Edit date persistence
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("formatted_date_today", currTodayDate);
+            editor.apply();
+        }
+
+        dateText.setText(dateFormatter.getTomorrowsDate(ZonedDateTime.now().plusDays(advanceCount)));
+    }
+
+    // Determine which goals to load dependent on the date
+    public void updateFragment() {
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
+            ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount + 1);
             for(int i = 0; i < cards.size(); i++){
-                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().plusDays(1).getDayOfMonth()){
-                    adapter.add(cards.get(i));
+                if(!cards.get(i).isPending()) {
+                    if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
+                        if (cards.get(i).isRecurring()) {
+                            //If the card is recurring then we want to display it if its not already finished and its past or equal to start date
+                            if (!cards.get(i).isDone() && (tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
+                                adapter.add(cards.get(i));
+                            } else {
+                                //We also want to display it if the recurring date comes again
+                                //If it is finished already we want to unfinish it and display it, otherwise just display
+                                if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
+                                    adapter.add(cards.get(i));
+                                    //add all monthly recurring tasks recurring today
+                                } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
+                                    adapter.add(cards.get(i));
+                                    //add all daily recurring tasks
+                                } else if (cards.get(i).getRecurringType().equals("DAILY")) {
+                                    adapter.add(cards.get(i));
+                                } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
+                                    adapter.add(cards.get(i));
+                                }
+                            }
+                        } else {
+                            //DISPLAY if its a tomorrow task
+                            if (cards.get(i).isTomorrow()) {
+                                adapter.add(cards.get(i));
+                            }
+                        }
+                    }
                 }
             }
-            //adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
             for(int i = 0; i < cards.size(); i++) {
                 Log.d("Ordered cards changed", cards.get(i).sortOrder() + " " + i + " " + cards.get(i).getDescription());
@@ -167,22 +200,5 @@ public class TomorrowListFragment extends ParentFragment {
             }
         });
     }
-    public void onResume() {
-        super.onResume();
-        // Get formatted date and display.
-        String savedDate = sharedPreferences.getString("formatted_date", "ERR");
 
-        // Check for date changes
-        if (!(dateFormatter.getTodaysDate(ZonedDateTime.now()).equals(savedDate))) {
-            activityModel.removeAllComplete();
-            formattedDate = dateFormatter.getTomorrowsDate(ZonedDateTime.now());
-
-            // Edit date persistence
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("formatted_date", formattedDate);
-            editor.apply();
-        }
-
-        dateText.setText(sharedPreferences.getString("formatted_date", "ERR"));
-    }
 }

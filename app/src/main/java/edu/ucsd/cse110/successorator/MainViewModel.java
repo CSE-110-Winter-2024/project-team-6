@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class MainViewModel extends ViewModel {
     // UI state
     private final MutableSubject<List<Item>> orderedCards;
     private final MutableSubject<Item> topCard;
-    private final MutableSubject<String> displayedText;
+    private final MutableSubject<ZonedDateTime> currentDate;
 
     private final MutableSubject<Boolean> isDone;
 
@@ -43,7 +44,7 @@ public class MainViewModel extends ViewModel {
         // Create the observable subjects.
         this.orderedCards = new SimpleSubject<>();
         this.topCard = new SimpleSubject<>();
-        this.displayedText = new SimpleSubject<>();
+        this.currentDate = new SimpleSubject<>();
         this.isDone = new SimpleSubject<>();
 
         // When the list of cards changes (or is first loaded), reset the ordering.
@@ -60,8 +61,8 @@ public class MainViewModel extends ViewModel {
 
     public void markCompleteOrIncomplete(int id) { itemRepository.markCompleteOrIncomplete(id); }
 
-    public Subject<String> getDisplayedText() {
-        return displayedText;
+    public Subject<ZonedDateTime> getDisplayedText() {
+        return currentDate;
     }
 
 
@@ -85,5 +86,7 @@ public class MainViewModel extends ViewModel {
     public int size(){return itemRepository.size();}
 
     public void removeAllComplete(){itemRepository.removeAllComplete();}
+
+
 
 }

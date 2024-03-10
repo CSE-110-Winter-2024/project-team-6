@@ -24,8 +24,11 @@ public class Item implements Serializable {
     private boolean pending;
 
 
+    private boolean tomorrow;
+
+
     public Item(String description, @Nullable Integer id, int sortOrder, boolean done,
-                ZonedDateTime date, boolean recurring, String recurringType, boolean pending){
+                ZonedDateTime date, boolean recurring, String recurringType, boolean pending, boolean tomorrow){
         this.sortOrder = sortOrder;
         this.id = id;
         this.description = description;
@@ -34,6 +37,7 @@ public class Item implements Serializable {
         this.recurring = recurring;
         this.recurringType = recurringType;
         this.pending = pending;
+        this.tomorrow = tomorrow;
 
     }
 
@@ -47,12 +51,12 @@ public class Item implements Serializable {
 
     public Item withSortOrder(int sortOrder) {
         return new Item(this.description, this.id, sortOrder, this.done, this.date,
-                this.recurring, this.recurringType, this.pending);
+                this.recurring, this.recurringType, this.pending, this.tomorrow);
     }
 
     public Item withId(int id) {
         return new Item(this.description, id, this.sortOrder, this.done, this.date,
-                this.recurring, this.recurringType, this.pending);
+                this.recurring, this.recurringType, this.pending, this.tomorrow);
     }
 
     public String getDescription(){
@@ -88,6 +92,11 @@ public class Item implements Serializable {
     public void markPending() { this.pending = !this.pending; }
 
 
+    public boolean isTomorrow(){ return this.tomorrow; }
+
+    public void markTomorrow(){this.tomorrow = !this.tomorrow;}
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,9 +106,7 @@ public class Item implements Serializable {
                 Objects.equals(description, item.description) &&
                 Objects.equals(id, item.id) && Objects.equals(date, item.date) &&
                 recurring == item.recurring && Objects.equals(recurringType, item.recurringType) &&
-                pending == item.pending;
-
-
+                pending == item.pending && tomorrow == item.tomorrow;
     }
 
     @Override

@@ -74,11 +74,12 @@ public class SimpleItemRepository implements ItemRepository {
         List<Item> items = dataSource.getItems();
         for(int i = 0; i < items.size(); i++){
             Item temp = items.get(i);
-            if(temp.isDone()){
+            if(temp.isDone() && !temp.isRecurring() && !temp.isTomorrow()){
                 remove(temp.id());
             }
         }
     }
+
 
     @Override
     public void markCompleteOrIncomplete(int id){
@@ -90,6 +91,9 @@ public class SimpleItemRepository implements ItemRepository {
 
     @Override
     public void markPending(int id) { dataSource.markPending(id);}
+
+    @Override
+    public void markTomorrow(int id){dataSource.markTomorrow(id);}
 
 
 }

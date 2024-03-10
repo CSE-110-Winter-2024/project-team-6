@@ -128,5 +128,18 @@ public class DateFormatter {
         return res;
     }
 
+    public String getPersistentDate(ZonedDateTime clock) {
+        this.clock = clock.minusHours(2);
+        // FOR TESTING MOCK UI DATE; THE DATE ADVANCED WILL PERSIST AFTER THE APP IS PAUSED AND RESUMED
+        String weekDay = this.clock.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+        // Return a formatted string for the date
+        int month = this.clock.getMonthValue();
+        int day = this.clock.getDayOfMonth();
+        int year = this.clock.getYear();
+
+        String formattedDate = String.format("%d/%d/%d",year, month, day);
+        return formattedDate;
+    }
+
 }
 

@@ -30,4 +30,6 @@ public interface ItemRepository {
 
     void markPending(int id);
 
+    void markTomorrow(int id);
+
 }

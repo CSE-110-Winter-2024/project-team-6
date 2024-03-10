@@ -61,15 +61,15 @@ public interface ItemDao{
         // If no incomplete items were found, append the new item to the start of the list
         if (lastIncompleteIndex == -1) {
             var newItem = new ItemEntity(item.description, item.sortOrder, item.isDone,
-                item.date, item.isRecurring, item.recurringType, item.isPending);
+                item.date, item.isRecurring, item.recurringType, item.isPending, item.isTomorrow);
             return Math.toIntExact(insert(newItem));
         }
 
         // Append the new item after the last incomplete item
         shiftSortOrders(lastIncompleteSortOrder + 1, getMaxSortOrder(), 1);
         var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1,
-                                     item.isDone, item.date, item.isRecurring, item.recurringType,
-                                     item.isPending);
+                                     item.isDone, item.date, item.isRecurring, item.recurringType, item.isPending, item.isTomorrow);
+
         return Math.toIntExact(insert(newItem));
     }
 
@@ -78,12 +78,13 @@ public interface ItemDao{
         shiftSortOrders(getMinSortOrder(), getMaxSortOrder(), 1);
         var newItem = new ItemEntity(
                 item.description, getMinSortOrder()-1, item.isDone,
-                item.date, item.isRecurring, item.recurringType, item.isPending
+                item.date, item.isRecurring, item.recurringType, item.isPending, item.isTomorrow
         );
         return Math.toIntExact(insert(newItem));
     }
+//"UPDATE items SET show = '~show', is_done = false WHERE is_done = true AND is_recurring = true;
 
-    @Query("DELETE FROM items WHERE is_done = true")
+    @Query("DELETE FROM items WHERE is_done = true AND is_recurring = false AND is_tomorrow = false")
     void removeAllComplete();
 
     @Query("DELETE FROM items WHERE id = :id")
@@ -98,5 +99,6 @@ public interface ItemDao{
     @Query("UPDATE items SET is_pending = ~is_pending WHERE id = :id")
     void markPending(int id);
 
-
+    @Query("UPDATE items SET is_tomorrow = ~is_tomorrow WHERE id = :id")
+    void markTomorrow(int id);
 }
