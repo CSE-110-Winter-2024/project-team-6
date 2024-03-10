@@ -227,42 +227,48 @@ public class ItemListFragment extends ParentFragment {
             if(cards == null) return;
             adapter.clear();
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
-            for(int i = 0; i < cards.size(); i++){
-                if(!cards.get(i).isPending()) {
-                    if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
-                        if (cards.get(i).isRecurring()) {
-                            // If the card is recurring then we want to display it if its not already finished and its past or equal to start date
-                            if (!cards.get(i).isDone()) {
-                                adapter.add(cards.get(i));
-                            } else {
-                                //We also want to display it if the recurring date comes again
-                                //If it is finished already we want to unfinish it and display it, otherwise just display
-                                if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
-                                    adapter.add(cards.get(i));
-                                    //add all monthly recurring tasks recurring today
-                                } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
-                                    adapter.add(cards.get(i));
-                                    //add all daily recurring tasks
-                                } else if (cards.get(i).getRecurringType().equals("DAILY")) {
-                                    adapter.add(cards.get(i));
-                                } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
-                                    adapter.add(cards.get(i));
-                                } else if (cards.get(i).isDone() && cards.get(i).isRecurring() && !dateChanged) {
-                                    adapter.add(cards.get(i));
+            String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
+            for(int j = 0; j < arrayOfCategories.length; j++){
+                for(int i = 0; i < cards.size(); i++){
+                    if(cards.get(i).getCategory().equals(arrayOfCategories[j])){
+                        if(!cards.get(i).isPending()) {
+                            if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
+                                if (cards.get(i).isRecurring()) {
+                                    // If the card is recurring then we want to display it if its not already finished and its past or equal to start date
+                                    if (!cards.get(i).isDone()) {
+                                        adapter.add(cards.get(i));
+                                    } else {
+                                        //We also want to display it if the recurring date comes again
+                                        //If it is finished already we want to unfinish it and display it, otherwise just display
+                                        if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
+                                            adapter.add(cards.get(i));
+                                            //add all monthly recurring tasks recurring today
+                                        } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
+                                            adapter.add(cards.get(i));
+                                            //add all daily recurring tasks
+                                        } else if (cards.get(i).getRecurringType().equals("DAILY")) {
+                                            adapter.add(cards.get(i));
+                                        } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
+                                            adapter.add(cards.get(i));
+                                        } else if (cards.get(i).isDone() && cards.get(i).isRecurring() && !dateChanged) {
+                                            adapter.add(cards.get(i));
+                                        }
+
+                                        //If the task is done but we haven't moved to next day yet we still want to display it
+                                    }
+                                } else {
+                                    //If the card isn't recurring we want to display it since we already deleted all complete one-time tasks
+                                    //BUT if its occurring tomorrow we don't want to display it
+                                    if (!cards.get(i).isTomorrow()) {
+                                        adapter.add(cards.get(i));
+                                    }
+
                                 }
-
-                                //If the task is done but we haven't moved to next day yet we still want to display it
                             }
-                        } else {
-                            //If the card isn't recurring we want to display it since we already deleted all complete one-time tasks
-                            //BUT if its occurring tomorrow we don't want to display it
-                            if (!cards.get(i).isTomorrow()) {
-                                adapter.add(cards.get(i));
-                            }
-
                         }
                     }
-                }
+            }
+
             }
             //adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
