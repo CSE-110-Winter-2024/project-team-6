@@ -90,20 +90,17 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                 }
             });
         }else if(fragment.equals("RECURRING")){
-            binding.getRoot().setOnClickListener(v -> {
-                var id = flashcard.id();
-                assert id != null;
-                onDeleteClick.accept(id);
-            });
-        } else if (fragment.equals("PENDING")){
-            // TODO: Note that current functionality is duplicate of Recurring;
-            // TODO: Currently placeholder for functionality to be implementing in US9
             binding.getRoot().setOnLongClickListener(v -> {
                 var id = flashcard.id();
                 assert id != null;
-
+                onDeleteClick.accept(id);
+                return true;
+            });
+        } else if (fragment.equals("PENDING")){
+            binding.getRoot().setOnLongClickListener(v -> {
+                var id = flashcard.id();
+                assert id != null;
                 showMovePendingItemsDialog(getItem(position));
-
                 return true;
             });
         }
