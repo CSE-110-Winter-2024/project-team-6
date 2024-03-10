@@ -12,12 +12,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
+import edu.ucsd.cse110.successorator.ui.itemList.dialog.MovePendingItemsDialogFragment;
 
 public class ItemListAdapter extends ArrayAdapter<Item> {
 
@@ -27,11 +29,14 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
     Consumer<Integer> strikethroughClick;
 
     String fragment;
+    FragmentManager fragmentManager;
+
 
     Context context;
 
     public ItemListAdapter(
             Context context,
+            FragmentManager fragmentManager,
             List<Item> items,
             Consumer<Integer> onDeleteClick,
             Consumer<Item> appendClick,
@@ -40,6 +45,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             String fragment
     ){
         super(context, 0, new ArrayList<>(items));
+        this.fragmentManager = fragmentManager;
         this.onDeleteClick = onDeleteClick;
         this.appendClick = appendClick;
         this.prependClick = prependClick;
@@ -131,10 +137,13 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         } else if (fragment.equals("PENDING")){
             // TODO: Note that current functionality is duplicate of Recurring;
             // TODO: Currently placeholder for functionality to be implementing in US9
-            binding.getRoot().setOnClickListener(v -> {
+            binding.getRoot().setOnLongClickListener(v -> {
                 var id = flashcard.id();
                 assert id != null;
-                onDeleteClick.accept(id);
+
+                showMovePendingItemsDialog(getItem(position));
+
+                return true;
             });
         }
 
@@ -165,5 +174,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         return id;
     }
 
-
+    public void showMovePendingItemsDialog(Item item) {
+        MovePendingItemsDialogFragment dialogFragment = MovePendingItemsDialogFragment.newInstance(item);
+        dialogFragment.show(fragmentManager, "MovePendingItemsDialogFragment");
+    }
 }

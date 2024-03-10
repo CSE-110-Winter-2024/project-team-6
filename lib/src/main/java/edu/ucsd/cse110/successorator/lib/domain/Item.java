@@ -25,6 +25,7 @@ public class Item implements Serializable {
 
     private boolean tomorrow;
 
+
     public Item(String description, @Nullable Integer id, int sortOrder, boolean done,
                 ZonedDateTime date, boolean recurring, String recurringType, boolean pending, boolean tomorrow){
         this.sortOrder = sortOrder;
@@ -36,6 +37,7 @@ public class Item implements Serializable {
         this.recurringType = recurringType;
         this.pending = pending;
         this.tomorrow = tomorrow;
+
     }
 
     public @Nullable Integer id() {
@@ -92,6 +94,7 @@ public class Item implements Serializable {
 
     public void markTomorrow(){this.tomorrow = !this.tomorrow;}
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,6 +105,7 @@ public class Item implements Serializable {
                 Objects.equals(id, item.id) && Objects.equals(date, item.date) &&
                 recurring == item.recurring && Objects.equals(recurringType, item.recurringType) &&
                 pending == item.pending && tomorrow == item.tomorrow;
+
     }
 
     @Override

@@ -41,8 +41,10 @@ public class ItemEntity {
     @ColumnInfo(name = "is_pending")
     public boolean isPending;
 
+
     @ColumnInfo(name = "is_tomorrow")
     public boolean isTomorrow;
+
 
     ItemEntity(@NonNull String description, int sortOrder, boolean isDone,
                ZonedDateTime date, boolean isRecurring, String recurringType, boolean isPending, boolean isTomorrow){
