@@ -103,7 +103,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             binding.TAG.setText("S");
         } else if (flashcard.getCategory().equals("ERRAND")) {
             binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
-            binding.TAG.setText("S");
+            binding.TAG.setText("E");
         }
 
 
