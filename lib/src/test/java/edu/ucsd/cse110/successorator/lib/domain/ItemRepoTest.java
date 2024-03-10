@@ -224,6 +224,86 @@ public class ItemRepoTest {
         assertEquals(dataSource.getItems().size(), 1);
 
     }
+    @Test
+    /*
+    BDD Scenario US2: No recurrence/One-time
+    Given its Saturday, Feb 24th
+    And I want to add the one time goal “Pay ticket” for today
+    When I click the “+” button
+    And I enter “Pay ticket”
+    And I select “One-time”
+    And I select “Create”
+    Then I see the goal added to today’s to do list
+     */
+    public void testAddGoalRecurrence(){
+        ZonedDateTime time = ZonedDateTime.of(java.time.LocalDate.of ( 2024 , 2 , 24 ) , java.time.LocalTime.of ( 9 , 30 ) , java.time.ZoneId.of ( "America/New_York" ) );
+        Item item = new Item("Pay ticket", 1, 1, false,
+                mockTime, false, "NONE", false, false);
+        dataSource.putItem(item);
+
+        assertEquals(dataSource.getItems().get(0), item);
+
+    }
+
+    @Test
+    /*
+    BDD Scenario US6: Adding Goals to pending
+    Given I am in the pending list view
+    And I want to add “Call Mom” to pending
+    When I tap the “+” button
+    And I enter the goal “Call Mom”
+    And I tap the create button
+    Then I see a goal in the Pending List view
+    And the goal says “Call Mom”
+     */
+    public void testAddGoalsToPending(){
+        Item item = new Item("Call Mom", 1, 1, false,
+                mockTime, false, "NONE", true, false);
+        dataSource.putItem(item);
+
+        String description = "Call Mom";
+        //Test the description
+        assertEquals(dataSource.getItems().get(0).getDescription(), description);
+    }
+
+    @Test
+    /*
+    BDD Scenario US8: Adding Goals to next day
+    Given I am in the “Today” List view
+    When I tap the “v”
+    And I tap Tomorrow
+    Then I am taken to the Tomorrow view.
+    When I tap “+”
+    And add the goal “Get Mail”
+    Then the goal “Get Mail” is added to the Tomorrow view.
+     */
+    public void testAddGoalsToNextDay(){
+        Item item = new Item("Get Mail", 1, 1, false,
+                mockTime, false, "NONE", true, true);
+        dataSource.putItem(item);
+
+        assertTrue(dataSource.getItems().get(0).isTomorrow());
+    }
+
+    @Test
+    /*
+    BDD Scenario US9: Moving Pending goals
+    Given the app is opened
+    and there is one goal on the pending list
+    and I have held the goal for long enough
+    and the menu popped up with the following options: Move to Today, Move to Tomorrow, Finish, Delete
+    When I press ‘Move to Today’
+    Then the goal is gone from the pending list and appears on today’s list
+     */
+    public void testMovePendingGoal(){
+        Item item = new Item("Some Goal", 1, 1, false,
+                mockTime, false, "NONE", true, false);
+        dataSource.putItem(item);
+        //Mark Pending as false
+        dataSource.markPending(item.id());
+
+        assertFalse(dataSource.getItems().get(0).isPending());
+    }
 
 
 }
