@@ -73,7 +73,7 @@ public class TomorrowListFragment extends ParentFragment {
             adapter.clear();
 
             for(int i = 0; i < cards.size(); i++){
-                if(cards.get(i).getDate().getDayOfMonth() == ZonedDateTime.now().plusDays(1).getDayOfMonth()){
+                if(cards.get(i).isTomorrow()){
                     adapter.add(cards.get(i));
                 }
             }

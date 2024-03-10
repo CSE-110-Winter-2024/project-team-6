@@ -67,6 +67,7 @@ public class MovePendingItemsDialogFragment extends DialogFragment {
         } else if (view.moveToTomorrow.isChecked()) {
             item.setDate(ZonedDateTime.now().plusDays(1));
             item.markPending();
+            item.markTomorrow();
             activityModel.remove(item.id());
             activityModel.append(item);
 
