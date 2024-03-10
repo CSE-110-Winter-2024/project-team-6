@@ -68,11 +68,16 @@ public class ItemListFragment extends ParentFragment {
         // Persistence of Date
         sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
         advanceCount = sharedPreferences.getInt("advance_count", 0);
-        if(activityModel.getOrderedCards().getValue() == null){
+        dateFormatter = new DateFormatter(ZonedDateTime.now());
+        String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");
 
-        }
+        // Apply the number of advanced days to the current date
+        String currDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
+
+        //
+        // Check for date changes
         activityModel.getOrderedCards().observe(cards -> {
-            if(cards != null && firstRun) {
+            if(cards != null && firstRun && !(currDate.equals(savedDate))) {
                 finishRecurringTasks();
                 firstRun = false;
             }
