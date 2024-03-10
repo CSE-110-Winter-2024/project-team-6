@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
@@ -27,6 +28,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
     String fragment;
 
+    Context context;
+
     public ItemListAdapter(
             Context context,
             List<Item> items,
@@ -42,6 +45,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         this.prependClick = prependClick;
         this.strikethroughClick = strikethroughClick;
         this.fragment = fragment;
+
+        this.context = context;
 
     }
 
@@ -65,11 +70,15 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             binding = ItemCardBinding.inflate(layoutInflater, parent, false);
         }
 
-        if(flashcard.isDone() && !fragment.equals("RECURRING")){
+
+        // Strikethroughs not affected in recurring view
+        // They are also not reflected in recurring tasks in the tomorrow view that are not already done
+        if(flashcard.isDone() && !fragment.equals("RECURRING") && !(fragment.equals("TOMORROW") && flashcard.isRecurring())){
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else{
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
+
         if(fragment.equals("HOME")) {
             binding.getRoot().setOnClickListener(v -> {
                 var id = flashcard.id();
@@ -81,6 +90,36 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                     appendClick.accept(flashcard);
                 } else {
                     prependClick.accept(flashcard);
+                }
+            });
+        } else if (fragment.equals("TOMORROW")) {
+            binding.getRoot().setOnClickListener(v -> {
+                var id = flashcard.id();
+                assert id != null;
+
+                // If Recurring Task still active in Today, don't mark done
+                if (flashcard.isRecurring() && !flashcard.isDone()) {
+                    Toast.makeText(context, "This goal is still active for Today. If you've finished this goal for Today, mark it finished in that view!", Toast.LENGTH_LONG).show();
+                } else {
+                    if (!flashcard.isRecurring()) { // One time tasks can be struck through as normal
+                        strikethroughClick.accept(id);
+                        getItem(position).markDone();
+                        onDeleteClick.accept(id);
+                        if (flashcard.isDone()) {
+                            appendClick.accept(flashcard);
+                        } else {
+                            prependClick.accept(flashcard);
+                        }
+                    } else {  // If recurring and done
+                        strikethroughClick.accept(id);
+                        onDeleteClick.accept(id);
+                        Log.d("Tomorrow Recurring", String.valueOf(flashcard.isDone()));
+                        if (flashcard.isDone()) {
+                            appendClick.accept(flashcard);
+                        } else {
+                            prependClick.accept(flashcard);
+                        }
+                    }
                 }
             });
         }else if(fragment.equals("RECURRING")){
