@@ -75,6 +75,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
             description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
             item = new Item(description, null, -1, false,
                     startDate, true, "MONTHLY",false , false);
+
         }else if(view.yearlyBtn.isChecked()){
             description += ", yearly on " +  dateFormatter.yearlyDate(startDate);
             item = new Item(description, null, -1, false,

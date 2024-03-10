@@ -27,6 +27,7 @@ public class ItemBuilder {
     private String recurringType;
 
     private boolean pending;
+    private boolean deleted;
 
     private boolean tomorrow;
 
@@ -77,6 +78,10 @@ public class ItemBuilder {
 
     public ItemBuilder addPending(boolean pending) {
         this.pending = pending;
+        return this;
+    }
+    public ItemBuilder addDeleted(boolean deleted){
+        this.deleted = deleted;
         return this;
     }
 

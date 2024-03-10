@@ -69,6 +69,7 @@ public interface ItemDao{
         shiftSortOrders(lastIncompleteSortOrder + 1, getMaxSortOrder(), 1);
         var newItem = new ItemEntity(item.description, lastIncompleteSortOrder+1,
                                      item.isDone, item.date, item.isRecurring, item.recurringType, item.isPending, item.isTomorrow);
+
         return Math.toIntExact(insert(newItem));
     }
 
@@ -100,5 +101,4 @@ public interface ItemDao{
 
     @Query("UPDATE items SET is_tomorrow = ~is_tomorrow WHERE id = :id")
     void markTomorrow(int id);
-
 }
