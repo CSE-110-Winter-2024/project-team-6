@@ -41,6 +41,7 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState){
         this.view = PendingViewAddItemBinding.inflate(getLayoutInflater());
+        view.HOME.setChecked(true);
 
 
         return new AlertDialog.Builder(getActivity())
@@ -55,8 +56,21 @@ public class CreatePendingItemDialogFragment extends DialogFragment {
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
 
+        String categoryChoice = "HOME";
+
+        if (view.HOME.isChecked()) {
+            categoryChoice = "HOME";
+        } else if (view.ERRANDS.isChecked()) {
+            categoryChoice = "ERRAND";
+        } else if (view.SCHOOL.isChecked()) {
+            categoryChoice = "SCHOOL";
+        } else {
+            categoryChoice = "WORK";
+        }
+
         var item = itemBuilder.addDescription(description)
                                 .addDate(ZonedDateTime.now().minusDays(1))
+                                .addCategory(categoryChoice)
                                 .addPending(true)
                                 .build();
 

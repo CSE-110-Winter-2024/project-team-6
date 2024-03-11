@@ -45,9 +45,13 @@ public class ItemEntity {
     @ColumnInfo(name = "is_tomorrow")
     public boolean isTomorrow;
 
+    @ColumnInfo(name = "category")
+    public String category;
+
 
     ItemEntity(@NonNull String description, int sortOrder, boolean isDone,
-               ZonedDateTime date, boolean isRecurring, String recurringType, boolean isPending, boolean isTomorrow){
+               ZonedDateTime date, boolean isRecurring, String recurringType, boolean isPending,
+               boolean isTomorrow, String category){
         this.description = description;
         this.sortOrder = sortOrder;
         this.isDone = isDone;
@@ -56,19 +60,22 @@ public class ItemEntity {
         this.recurringType = recurringType;
         this.isPending = isPending;
         this.isTomorrow = isTomorrow;
+        this.category = category;
     }
 
     // Given an item create an ItemEntity
     public static ItemEntity fromItem(@NonNull Item item){
         var task = new ItemEntity(item.getDescription(), item.sortOrder(), item.isDone(),
-                                  item.getDate(), item.isRecurring(), item.getRecurringType(), item.isPending(), item.isTomorrow());
+                                  item.getDate(), item.isRecurring(), item.getRecurringType(),
+                                  item.isPending(), item.isTomorrow(), item.getCategory());
         task.id = item.id();
         return task;
     }
 
     // Create a new Item
     public @NonNull Item toItem(){
-        return new Item(description, id, sortOrder, isDone, date, isRecurring, recurringType, isPending, isTomorrow);
+        return new Item(description, id, sortOrder, isDone, date, isRecurring, recurringType,
+                        isPending, isTomorrow, category);
     }
 
 }

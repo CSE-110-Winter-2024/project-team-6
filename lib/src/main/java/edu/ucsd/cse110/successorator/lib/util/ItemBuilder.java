@@ -33,6 +33,8 @@ public class ItemBuilder {
 
     private boolean show;
 
+    private String category;
+
     public ItemBuilder() {
         this.description = "";
         this.sortOrder = -1;
@@ -44,6 +46,7 @@ public class ItemBuilder {
         this.pending = false;
         this.tomorrow = false;
         this.show = true;
+        this.category = "NONE";
     }
 
     public ItemBuilder addDescription(String description) {
@@ -85,7 +88,18 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder addCategory(String category) {
+        this.category = category;
+        return this;
+    }
+
+    public ItemBuilder setTomorrow(boolean tomorrow) {
+        this.tomorrow = tomorrow;
+        return this;
+    }
+
     public Item build() {
-        return new Item(description, id, sortOrder, done, date, recurring, recurringType, pending, tomorrow);
+        return new Item(description, id, sortOrder, done, date, recurring,
+                        recurringType, pending, tomorrow, category);
     }
 }

@@ -6,6 +6,49 @@
     android:padding="16dp">
 
 
+    <RadioGroup
+        android:id="@+id/Tags"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/HOME"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_home"
+            android:buttonTint="#FFEB3B"
+            android:text="Home" />
+
+        <RadioButton
+            android:id="@+id/WORK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_work"
+            android:buttonTint="#2196F3"
+            android:text="Work" />
+
+        <RadioButton
+            android:id="@+id/SCHOOL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_school"
+            android:buttonTint="#E91E63"
+            android:text="School" />
+
+        <RadioButton
+            android:id="@+id/ERRANDS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_errands"
+            android:buttonTint="#4CAF50"
+            android:text="Errands" />
+    </RadioGroup>
+
     <EditText
         android:id="@+id/editTextDialog"
         android:layout_width="match_parent"

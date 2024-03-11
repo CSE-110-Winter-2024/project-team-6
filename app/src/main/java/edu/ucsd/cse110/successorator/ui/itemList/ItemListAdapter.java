@@ -1,5 +1,4 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
-import java.time.ZonedDateTime;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -11,12 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.ItemCardBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.MovePendingItemsDialogFragment;
@@ -84,6 +85,27 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         }else{
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
+
+        // Naive implementation of adding tags.
+
+        // Home by default
+        binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+
+
+        if (flashcard.getCategory().equals("HOME")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+            binding.TAG.setText("H");
+        } else if (flashcard.getCategory().equals("WORK")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
+            binding.TAG.setText("W");
+        } else if (flashcard.getCategory().equals("SCHOOL")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
+            binding.TAG.setText("S");
+        } else if (flashcard.getCategory().equals("ERRAND")) {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
+            binding.TAG.setText("E");
+        }
+
 
         if(fragment.equals("HOME")) {
             binding.getRoot().setOnClickListener(v -> {

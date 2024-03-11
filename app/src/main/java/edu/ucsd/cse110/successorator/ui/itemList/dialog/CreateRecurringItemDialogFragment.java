@@ -2,7 +2,9 @@ package edu.ucsd.cse110.successorator.ui.itemList.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -22,6 +24,7 @@ import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentDialogAddItemBinding;
 import edu.ucsd.cse110.successorator.databinding.RecurringViewAddItemBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
+import edu.ucsd.cse110.successorator.lib.util.ItemBuilder;
 
 
 public class CreateRecurringItemDialogFragment extends DialogFragment {
@@ -29,6 +32,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
 
     private MainViewModel activityModel;
 
+    private ItemBuilder itemBuilder;
     CreateRecurringItemDialogFragment() {
         // Empty required constructor
     }
@@ -45,6 +49,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         this.view = RecurringViewAddItemBinding.inflate(getLayoutInflater());
         this.view.weeklyBtn.setChecked(true);
+        view.HOME.setChecked(true);
         return new AlertDialog.Builder(getActivity())
                 .setTitle("New Item")
                 .setMessage("Please enter your MIT")
@@ -56,31 +61,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
         var description = view.editTextDialog.getText().toString();
-
-
-        ZonedDateTime startDate = ZonedDateTime.of(Integer.valueOf(view.yearInput.getText().toString()), Integer.valueOf(view.monthInput.getText().toString()), Integer.valueOf(view.dayInput.getText().toString()), 0, 0, 0, 0, ZoneId.of("UTC"));
-        DateFormatter dateFormatter = new DateFormatter(startDate);
-        var item = new Item(description, null, -1, false,
-                ZonedDateTime.now(), false, "NONE", false, false);
-
-        if(view.dailyBtn.isChecked()){
-            description += ", daily";
-            item = new Item(description, null, -1, false,
-                    startDate, true, "DAILY", false, false);
-        }else if(view.weeklyBtn.isChecked()){
-            description += ", weekly on " +  startDate.getDayOfWeek().toString();
-            item = new Item(description, null, -1, false,
-                    startDate, true, "WEEKLY", false, false);
-        }else if(view.monthlyBtn.isChecked()){
-            description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
-            item = new Item(description, null, -1, false,
-                    startDate, true, "MONTHLY",false , false);
-
-        }else if(view.yearlyBtn.isChecked()){
-            description += ", yearly on " +  dateFormatter.yearlyDate(startDate);
-            item = new Item(description, null, -1, false,
-                    startDate, true, "YEARLY",false, false);
-        }
+        var item = makeRecurrenceItem(description);
         activityModel.append(item);
         dialog.dismiss();
     }
@@ -98,4 +79,45 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
     }
+
+    private Item makeRecurrenceItem(String description){
+
+        ZonedDateTime startDate = ZonedDateTime.of(Integer.valueOf(view.yearInput.getText().toString()), Integer.valueOf(view.monthInput.getText().toString()), Integer.valueOf(view.dayInput.getText().toString()), 0, 0, 0, 0, ZoneId.of("UTC"));
+        DateFormatter dateFormatter = new DateFormatter(startDate);
+
+        Item returnitem;
+        String recurringChoice = "NONE";
+        String categoryChoice = "HOME";
+
+        if (view.dailyBtn.isChecked()){
+            description += ", daily";
+            recurringChoice = "DAILY";
+        } else if (view.weeklyBtn.isChecked()){
+            description += ", weekly on " +  startDate.getDayOfWeek().toString();description += ", weekly on " +  startDate.getDayOfWeek().toString();
+            recurringChoice = "WEEKLY";
+        } else if (view.monthlyBtn.isChecked()){
+            description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
+            recurringChoice = "MONTHLY";
+        } else if (view.yearlyBtn.isChecked()) {
+            description += ", yearly on " +  dateFormatter.yearlyDate(startDate);
+            recurringChoice = "YEARLY";
+        }
+
+        if (view.HOME.isChecked()) {
+            categoryChoice = "HOME";
+        } else if (view.ERRANDS.isChecked()) {
+            categoryChoice = "ERRAND";
+        } else if (view.SCHOOL.isChecked()) {
+            categoryChoice = "SCHOOL";
+        } else {
+            categoryChoice = "WORK";
+        }
+
+        returnitem = itemBuilder.addDescription(description).addDate(startDate).addRecurring(true)
+                .addRecurringType(recurringChoice).addCategory(categoryChoice).build();
+
+        return returnitem;
+    }
 }
+
+

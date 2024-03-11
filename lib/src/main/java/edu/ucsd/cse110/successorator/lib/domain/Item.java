@@ -23,12 +23,15 @@ public class Item implements Serializable {
 
     private boolean pending;
 
-
     private boolean tomorrow;
+
+    // Check for the context
+    private String category;
 
 
     public Item(String description, @Nullable Integer id, int sortOrder, boolean done,
-                ZonedDateTime date, boolean recurring, String recurringType, boolean pending, boolean tomorrow){
+                ZonedDateTime date, boolean recurring, String recurringType, boolean pending,
+                boolean tomorrow, String category){
         this.sortOrder = sortOrder;
         this.id = id;
         this.description = description;
@@ -38,6 +41,7 @@ public class Item implements Serializable {
         this.recurringType = recurringType;
         this.pending = pending;
         this.tomorrow = tomorrow;
+        this.category = category;
 
     }
 
@@ -51,12 +55,12 @@ public class Item implements Serializable {
 
     public Item withSortOrder(int sortOrder) {
         return new Item(this.description, this.id, sortOrder, this.done, this.date,
-                this.recurring, this.recurringType, this.pending, this.tomorrow);
+                this.recurring, this.recurringType, this.pending, this.tomorrow, this.category);
     }
 
     public Item withId(int id) {
         return new Item(this.description, id, this.sortOrder, this.done, this.date,
-                this.recurring, this.recurringType, this.pending, this.tomorrow);
+                this.recurring, this.recurringType, this.pending, this.tomorrow, this.category);
     }
 
     public String getDescription(){
@@ -96,6 +100,10 @@ public class Item implements Serializable {
 
     public void markTomorrow(){this.tomorrow = !this.tomorrow;}
 
+    public String getCategory() { return this.category; }
+
+    public void setCategory(String category) { this.category = category; }
+
 
     @Override
     public boolean equals(Object o) {
@@ -106,11 +114,13 @@ public class Item implements Serializable {
                 Objects.equals(description, item.description) &&
                 Objects.equals(id, item.id) && Objects.equals(date, item.date) &&
                 recurring == item.recurring && Objects.equals(recurringType, item.recurringType) &&
-                pending == item.pending && tomorrow == item.tomorrow;
+                pending == item.pending && tomorrow == item.tomorrow &&
+                Objects.equals(category, item.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, sortOrder, id, done, date, recurring, recurringType, pending);
+        return Objects.hash(description, sortOrder, id, done, date, recurring,
+                            recurringType, pending, category);
     }
 }
