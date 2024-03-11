@@ -31,6 +31,21 @@ public class MainViewModelTest extends TestCase {
         itemRepository = new SimpleItemRepository(dataSource); // Instantiate the ItemRepository with the DataSource
     }
     @Test
+    public void testMarkCompleteOrIncomplete(){
+        List<Item> items = new ArrayList<>();
+        items.add(new Item("Item 1", 1, 1, false,
+                mockTime, false, "NONE", false, false, "NONE"));
+        dataSource.putItems(items);
+        MainViewModel viewModel = new MainViewModel(itemRepository);
+        viewModel.markCompleteOrIncomplete(1);
+
+        viewModel.getOrderedCards().observe(cards -> {
+            assertEquals(true, cards.get(0).isDone());
+
+        });
+
+    }
+    @Test
     public void testGetOrderedCards() throws InterruptedException{
         List<Item> items = new ArrayList<>();
         items.add(new Item("Item 1", 1, 1, false,
