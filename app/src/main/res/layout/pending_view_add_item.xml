@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/outline_home"
+            android:background="@drawable/radio_home"
             android:buttonTint="#FFEB3B"
             android:text="Home" />
 
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/outline_work"
+            android:background="@drawable/radio_work"
             android:buttonTint="#2196F3"
             android:text="Work" />
 
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/outline_school"
+            android:background="@drawable/radio_school"
             android:buttonTint="#E91E63"
             android:text="School" />
 
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/outline_errands"
+            android:background="@drawable/radio_errands"
             android:buttonTint="#4CAF50"
             android:text="Errands" />
     </RadioGroup>
