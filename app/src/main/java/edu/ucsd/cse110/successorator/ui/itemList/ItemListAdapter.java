@@ -82,6 +82,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         // They are also not reflected in recurring tasks in the tomorrow view that are not already done
         if(flashcard.isDone() && !fragment.equals("RECURRING") && !(fragment.equals("TOMORROW") && flashcard.isRecurring())){
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_done));
         }else{
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
@@ -89,21 +90,27 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         // Naive implementation of adding tags.
 
         // Home by default
-        binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+        // binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
 
-
-        if (flashcard.getCategory().equals("HOME")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
-            binding.TAG.setText("H");
-        } else if (flashcard.getCategory().equals("WORK")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
-            binding.TAG.setText("W");
-        } else if (flashcard.getCategory().equals("SCHOOL")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
-            binding.TAG.setText("S");
-        } else if (flashcard.getCategory().equals("ERRAND")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
-            binding.TAG.setText("S");
+        if (!flashcard.isDone()) {
+            switch (flashcard.getCategory()) {
+                case "HOME":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+                    binding.TAG.setText("H");
+                    break;
+                case "WORK":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
+                    binding.TAG.setText("W");
+                    break;
+                case "SCHOOL":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
+                    binding.TAG.setText("S");
+                    break;
+                case "ERRAND":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
+                    binding.TAG.setText("S");
+                    break;
+            }
         }
 
 
