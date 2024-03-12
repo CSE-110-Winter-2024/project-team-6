@@ -80,6 +80,28 @@ public class SimpleItemRepository implements ItemRepository {
         }
     }
 
+    @Override
+    public void resetFinishedRecurring(){
+        List<Item> items = dataSource.getItems();
+        for(int i = 0; i < items.size(); i++){
+            Item temp = items.get(i);
+            if(temp.isDone() && temp.isRecurring()){
+                dataSource.markCompleteOrIncomplete(temp.id());
+                if(temp.getRecurringType().equals("WEEKLY")){
+                    dataSource.advanceWeek(temp.id());
+                }else if(temp.getRecurringType().equals("MONTHLY")){
+                    dataSource.advanceMonth(temp.id());
+                }else if(temp.getRecurringType().equals("DAILY")){
+                    dataSource.advanceDay(temp.id());
+
+                }else if(temp.getRecurringType().equals("YEARLY")) {
+                    dataSource.advanceYear(temp.id());
+                }
+                dataSource.putItem(temp);
+            }
+        }
+    }
+
 
     @Override
     public void markCompleteOrIncomplete(int id){

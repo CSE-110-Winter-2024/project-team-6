@@ -26,6 +26,8 @@ public interface ItemRepository {
 
     void removeAllComplete();
 
+    void resetFinishedRecurring();
+
     void markRecurring(int id);
 
     void markPending(int id);
