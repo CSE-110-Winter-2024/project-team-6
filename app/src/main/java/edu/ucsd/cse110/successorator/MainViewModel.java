@@ -87,6 +87,8 @@ public class MainViewModel extends ViewModel {
 
     public void removeAllComplete(){itemRepository.removeAllComplete();}
 
+    public void resetFinishedRecurring(){itemRepository.resetFinishedRecurring();}
+
 
 
 }

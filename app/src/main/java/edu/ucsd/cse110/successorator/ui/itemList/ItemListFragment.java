@@ -36,7 +36,7 @@ public class ItemListFragment extends ParentFragment {
     private ItemListAdapter adapter;
     private TextView dateText;
 
-    private boolean dateChanged = false;
+    //private boolean dateChanged = false;
 
     private String formattedDate;
     private DateFormatter dateFormatter;
@@ -62,7 +62,7 @@ public class ItemListFragment extends ParentFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dateChanged = false;
+        //dateChanged = false;
         this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME");
 
         // Persistence of Date
@@ -76,12 +76,15 @@ public class ItemListFragment extends ParentFragment {
 
         //
         // Check for date changes
+        /*
         activityModel.getOrderedCards().observe(cards -> {
             if(cards != null && firstRun && !(currDate.equals(savedDate))) {
                 finishRecurringTasks();
                 firstRun = false;
             }
         });
+
+         */
         updateFragment();
     }
 
@@ -95,7 +98,7 @@ public class ItemListFragment extends ParentFragment {
         // Set the adapter on the ListView
         view.cardList.setAdapter(adapter);
         dateText = this.view.dateView;
-        dateChanged = false;
+        //dateChanged = false;
         dateFormatter = new DateFormatter(ZonedDateTime.now());
 
         view.addItem.setOnClickListener(v -> {
@@ -111,7 +114,7 @@ public class ItemListFragment extends ParentFragment {
 
             // Apply the number of advanced days to the current date
             String formattedDate = dateFormatter.getPersistentDate(ZonedDateTime.now().plusDays(advanceCount));
-            dateChanged = true;
+            //dateChanged = true;
             // Save formatted date for persistence
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("formatted_date_today", formattedDate);
@@ -121,10 +124,12 @@ public class ItemListFragment extends ParentFragment {
             // Update UI with formatted date
             dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
             activityModel.removeAllComplete();
+            activityModel.resetFinishedRecurring();
+
+            Log.d("MYTAG", activityModel.getOrderedCards().getValue().get(0).getDate().toString());
+            Log.d("IS DONE", activityModel.getOrderedCards().getValue().get(0).isDone() + "");
             updateTomorrow();
-            finishRecurringTasks();
             updateFragment();
-            dateChanged = false;
         });
 
         return view.getRoot();
@@ -137,7 +142,7 @@ public class ItemListFragment extends ParentFragment {
     @Override
     public void onResume() {
         super.onResume();
-        dateChanged = false;
+        //dateChanged = false;
         // Get formatted date and display.
         String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");
         int advanceCount = sharedPreferences.getInt("advance_count", 0);
@@ -150,11 +155,12 @@ public class ItemListFragment extends ParentFragment {
         // Check for date changes
         if (!(currDate.equals(savedDate))) {
             activityModel.removeAllComplete();
-            dateChanged = true;
-            finishRecurringTasks();
+            //dateChanged = true;
+            //finishRecurringTasks();
+            activityModel.resetFinishedRecurring();
             updateTomorrow();
             updateFragment();
-            dateChanged = false;
+            //dateChanged = false;
 
 
             // Display the formatted date
@@ -168,46 +174,6 @@ public class ItemListFragment extends ParentFragment {
 
         // Set date text from last saved date
         dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
-    }
-
-    // Determine which goals to load associated with the date
-    public void finishRecurringTasks(){
-        List<Item> cards = activityModel.getOrderedCards().getValue();
-            if (cards == null) {
-                return;
-            }
-            ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
-            for(int i = 0; i < cards.size(); i++) {
-                if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
-                    if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
-                        if (cards.get(i).isDone()) {
-                            cards.get(i).markDone();
-                            activityModel.remove(cards.get(i).id());
-                            activityModel.append(cards.get(i));
-                        }
-                        //add all monthly recurring tasks recurring today
-                    } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
-                        if (cards.get(i).isDone()) {
-                            cards.get(i).markDone();
-                            activityModel.remove(cards.get(i).id());
-                            activityModel.append(cards.get(i));
-                        }
-                        //add all daily recurring tasks
-                    } else if (cards.get(i).getRecurringType().equals("DAILY")) {
-                        if (cards.get(i).isDone()) {
-                            cards.get(i).markDone();
-                            activityModel.remove(cards.get(i).id());
-                            activityModel.append(cards.get(i));
-                        }
-                    } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
-                        if (cards.get(i).isDone()) {
-                            cards.get(i).markDone();
-                            activityModel.remove(cards.get(i).id());
-                            activityModel.append(cards.get(i));
-                        }
-                    }
-                }
-            }
     }
 
     public void updateTomorrow(){
@@ -227,49 +193,46 @@ public class ItemListFragment extends ParentFragment {
             if(cards == null) return;
             adapter.clear();
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
+
             String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
             for(int j = 0; j < arrayOfCategories.length; j++){  // Go through all category tags
-                for(int i = 0; i < cards.size(); i++){
-                    if(cards.get(i).getCategory().equals(arrayOfCategories[j])){
-                        if(!cards.get(i).isPending()) {  // don't consider pending tasks in today view
-                            if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
+                for(int i = 0; i < cards.size(); i++) {
+                    if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
+                        if (!cards.get(i).isPending() && !cards.get(i).isDone()) {  // don't consider pending tasks in today view
+                            if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
-                                    // If the card is recurring then we want to display it if its not already finished and its past or equal to start date
-                                    if (!cards.get(i).isDone()) {
-                                        adapter.add(cards.get(i));
-                                    } else {
-                                        //We also want to display it if the recurring date comes again
-                                        //If it is finished already we want to unfinish it and display it, otherwise just display
-                                        if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
-                                            adapter.add(cards.get(i));
-                                            //add all monthly recurring tasks recurring today
-                                        } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
-                                            adapter.add(cards.get(i));
-                                            //add all daily recurring tasks
-                                        } else if (cards.get(i).getRecurringType().equals("DAILY")) {
-                                            adapter.add(cards.get(i));
-                                        } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
-                                            adapter.add(cards.get(i));
-                                        } else if (cards.get(i).isDone() && cards.get(i).isRecurring() && !dateChanged) {
-                                            adapter.add(cards.get(i));
-                                        }
-
-                                        //If the task is done but we haven't moved to next day yet we still want to display it
-                                    }
+                                    adapter.add(cards.get(i));
                                 } else {
                                     //If the card isn't recurring we want to display it since we already deleted all complete one-time tasks
                                     //BUT if its occurring tomorrow we don't want to display it
-                                    if (!cards.get(i).isTomorrow()) { // One time task for not tomorrow (i.e. one time task for today)
+                                    if (!cards.get(i).isTomorrow()) {
                                         adapter.add(cards.get(i));
                                     }
-
                                 }
                             }
                         }
                     }
+                }
             }
 
+            for(int i = 0; i < cards.size(); i++) {
+                if (cards.get(i).isDone()) {
+                    if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
+                        if (cards.get(i).isRecurring()) {
+                            adapter.add(cards.get(i));
+                        } else {
+                            //If the card isn't recurring we want to display it since we already deleted all complete one-time tasks
+                            //BUT if its occurring tomorrow we don't want to display it
+                            if (!cards.get(i).isTomorrow()) {
+                                adapter.add(cards.get(i));
+                            }
+                        }
+                    }
+                }
+
             }
+
+
             //adapter.addAll(new ArrayList<>(cards));
             adapter.notifyDataSetChanged();
             for(int i = 0; i < cards.size(); i++) {
