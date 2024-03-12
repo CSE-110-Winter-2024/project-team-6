@@ -37,7 +37,8 @@ public class DateFormatter {
         String weekDay = this.clock.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
 
         // Return a formatted string for the date
-        String formattedDate = String.format("Today %s %d/%d", weekDay, month, day);
+        String shortday = weekDay.substring(0, 3);
+        String formattedDate = String.format("Today %s %d/%d", shortday, month, day);
 
         return formattedDate;
     }
@@ -53,9 +54,9 @@ public class DateFormatter {
         int day = this.clock.getDayOfMonth();
 
         String weekDay = this.clock.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
-
+        String shortday = weekDay.substring(0, 3);
         // Return a formatted string for the date
-        String formattedDate = String.format("Tomorrow %s %d/%d", weekDay, month, day);
+        String formattedDate = String.format("Tomorrow %s %d/%d", shortday, month, day);
 
         return formattedDate;
     }
@@ -86,9 +87,8 @@ public class DateFormatter {
         // Return a formatted string for the date
         int day = this.clock.getDayOfMonth();
         String n = countNthDay(day);
-        String shortday = weekDay.substring(0, 3);;
-        String formattedDate = String.format("%s %s", n, shortday);
-        return formattedDate;
+        String shortday = weekDay.substring(0, 3);
+        return String.format("%s %s", n, shortday);
     }
 
     public String yearlyDate(ZonedDateTime clock){
