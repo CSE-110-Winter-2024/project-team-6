@@ -95,7 +95,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
             description += ", daily";
             recurringChoice = "DAILY";
         } else if (view.weeklyBtn.isChecked()){
-            description += ", weekly on " +  startDate.getDayOfWeek().toString();description += ", weekly on " +  startDate.getDayOfWeek().toString();
+            description += ", weekly on " +  startDate.getDayOfWeek().toString();
             recurringChoice = "WEEKLY";
         } else if (view.monthlyBtn.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(startDate);
