@@ -48,12 +48,10 @@
 
     </RelativeLayout>
 
-
     <Button
         android:id="@+id/add_item"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/add_task"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -67,9 +65,10 @@
         android:textSize="30sp"
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/add_item"
-        app:layout_constraintHorizontal_bias="0.658"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/add_day"
@@ -82,9 +81,8 @@
 
     <TextView
         android:id="@+id/focusIndicator"
-        android:layout_width="78dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
         android:layout_marginTop="21dp"
         android:text="Focus: None"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout"

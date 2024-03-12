@@ -88,14 +88,46 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
         // Naive implementation of adding tags.
 
-        // House by default
-        binding.cardFrontText.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+        // Home by default
+        // binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
 
-        /*
-        if (flashcard.getTag() == HOME) {
-            binding.cardFrontText.setBackground();
+        if (!flashcard.isDone()) {
+            switch (flashcard.getCategory()) {
+                case "HOME":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+                    binding.TAG.setText("H");
+                    break;
+                case "WORK":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
+                    binding.TAG.setText("W");
+                    break;
+                case "SCHOOL":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
+                    binding.TAG.setText("S");
+                    break;
+                case "ERRAND":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
+                    binding.TAG.setText("E");
+                    break;
+            }
+        } else  {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_done));
+            switch (flashcard.getCategory()) {
+                case "HOME":
+                    binding.TAG.setText("H");
+                    break;
+                case "WORK":
+                    binding.TAG.setText("W");
+                    break;
+                case "SCHOOL":
+                    binding.TAG.setText("S");
+                    break;
+                case "ERRAND":
+                    binding.TAG.setText("E");
+                    break;
+            }
         }
-         */
+
 
         if(fragment.equals("HOME")) {
             binding.getRoot().setOnClickListener(v -> {
