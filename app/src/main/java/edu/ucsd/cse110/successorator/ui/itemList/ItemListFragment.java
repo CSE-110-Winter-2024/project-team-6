@@ -177,7 +177,7 @@ public class ItemListFragment extends ParentFragment {
                 return;
             }
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
-            for(int i = 0; i < cards.size(); i++){
+            for(int i = 0; i < cards.size(); i++) {
                 if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                     if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
                         if (cards.get(i).isDone()) {
@@ -228,10 +228,10 @@ public class ItemListFragment extends ParentFragment {
             adapter.clear();
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
             String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
-            for(int j = 0; j < arrayOfCategories.length; j++){
+            for(int j = 0; j < arrayOfCategories.length; j++){  // Go through all category tags
                 for(int i = 0; i < cards.size(); i++){
                     if(cards.get(i).getCategory().equals(arrayOfCategories[j])){
-                        if(!cards.get(i).isPending()) {
+                        if(!cards.get(i).isPending()) {  // don't consider pending tasks in today view
                             if((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear()  || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
                                     // If the card is recurring then we want to display it if its not already finished and its past or equal to start date
@@ -259,7 +259,7 @@ public class ItemListFragment extends ParentFragment {
                                 } else {
                                     //If the card isn't recurring we want to display it since we already deleted all complete one-time tasks
                                     //BUT if its occurring tomorrow we don't want to display it
-                                    if (!cards.get(i).isTomorrow()) {
+                                    if (!cards.get(i).isTomorrow()) { // One time task for not tomorrow (i.e. one time task for today)
                                         adapter.add(cards.get(i));
                                     }
 
