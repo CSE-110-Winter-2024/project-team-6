@@ -126,8 +126,6 @@ public class ItemListFragment extends ParentFragment {
             activityModel.removeAllComplete();
             activityModel.resetFinishedRecurring();
 
-            Log.d("MYTAG", activityModel.getOrderedCards().getValue().get(0).getDate().toString());
-            Log.d("IS DONE", activityModel.getOrderedCards().getValue().get(0).isDone() + "");
             updateTomorrow();
             updateFragment();
         });
@@ -198,7 +196,7 @@ public class ItemListFragment extends ParentFragment {
             for(int j = 0; j < arrayOfCategories.length; j++){  // Go through all category tags
                 for(int i = 0; i < cards.size(); i++) {
                     if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
-                        if (!cards.get(i).isPending() && !cards.get(i).isDone()) {  // don't consider pending tasks in today view
+                        if (!cards.get(i).isPending() && !cards.get(i).isDone()) {  // don't consider pending tasks in today view OR // don't consider done tasks yet
                             if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
                                     adapter.add(cards.get(i));
@@ -215,6 +213,7 @@ public class ItemListFragment extends ParentFragment {
                 }
             }
 
+            // Consider done tasks here
             for(int i = 0; i < cards.size(); i++) {
                 if (cards.get(i).isDone()) {
                     if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
@@ -229,7 +228,6 @@ public class ItemListFragment extends ParentFragment {
                         }
                     }
                 }
-
             }
 
 

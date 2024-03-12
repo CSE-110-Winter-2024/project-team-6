@@ -45,7 +45,7 @@ public class RecurringListFragment extends ParentFragment {
             var dialogFragment = ConfirmDeleteCardDialogFragment.newInstance(id);
             dialogFragment.show(getParentFragmentManager(), "ConfirmDeleteCardDialogFragment");
         }, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "RECURRING");
-        activityModel.getOrderedCards().observe(cards -> {
+        /*activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
 
@@ -66,7 +66,7 @@ public class RecurringListFragment extends ParentFragment {
             if(activityModel.size() == 0 && view != null){
                 view.placeholderText.setVisibility(View.VISIBLE);
             }
-        });
+        });*/
 
     }
 
@@ -85,12 +85,21 @@ public class RecurringListFragment extends ParentFragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+
+    }
+    public void onResume() {
+        super.onResume();
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
-            for(int i = 0; i < cards.size(); i++){
-                if(cards.get(i).isRecurring()){
-                    adapter.add(cards.get(i));
+            String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
+            for(int j = 0; j < arrayOfCategories.length; j++) {  // Go through all category tags
+                for (int i = 0; i < cards.size(); i++) {
+                    if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
+                        if (cards.get(i).isRecurring()) {
+                            adapter.add(cards.get(i));
+                        }
+                    }
                 }
             }
             //adapter.addAll(new ArrayList<>(cards));
@@ -106,9 +115,6 @@ public class RecurringListFragment extends ParentFragment {
                 this.view.placeholderText.setVisibility(View.VISIBLE);
             }
         });
-    }
-    public void onResume() {
-        super.onResume();
     }
 
 }
