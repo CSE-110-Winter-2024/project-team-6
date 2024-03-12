@@ -91,19 +91,43 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         // Home by default
         // binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
 
+        if (!flashcard.isDone()) {
+            switch (flashcard.getCategory()) {
+                case "HOME":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+                    binding.TAG.setText("H");
+                    break;
+                case "WORK":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
+                    binding.TAG.setText("W");
+                    break;
+                case "SCHOOL":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
+                    binding.TAG.setText("S");
+                    break;
+                case "ERRAND":
+                    binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
+                    binding.TAG.setText("E");
+                    break;
+            }
 
-        if (flashcard.getCategory().equals("HOME")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
-            binding.TAG.setText("H");
-        } else if (flashcard.getCategory().equals("WORK")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
-            binding.TAG.setText("W");
-        } else if (flashcard.getCategory().equals("SCHOOL")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
-            binding.TAG.setText("S");
-        } else if (flashcard.getCategory().equals("ERRAND")) {
-            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
-            binding.TAG.setText("E");
+        } else {
+            binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_done));
+            switch (flashcard.getCategory()) {
+                case "HOME":
+                    binding.TAG.setText("H");
+                    break;
+                case "WORK":
+                    binding.TAG.setText("W");
+                    break;
+                case "SCHOOL":
+                    binding.TAG.setText("S");
+                    break;
+                case "ERRAND":
+                    binding.TAG.setText("E");
+                    break;
+            }
+
         }
 
 
