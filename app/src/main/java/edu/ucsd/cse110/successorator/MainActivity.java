@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         int id = item.getItemId();
-
         if (id == R.id.today) {
             swapFragments(ItemListFragment.class);
             return true;
