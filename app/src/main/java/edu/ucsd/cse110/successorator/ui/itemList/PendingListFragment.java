@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
+import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentPendingListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
@@ -65,7 +67,7 @@ public class PendingListFragment extends ParentFragment {
             // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
             dialogFragment.show(getParentFragmentManager(),"CreatePendingItemDialogFragment");
         });
-
+        setFocusModeIndicator();
         return view.getRoot();
     }
     @Override
@@ -114,5 +116,31 @@ public class PendingListFragment extends ParentFragment {
             }
         });
     }
+    public void setFocusModeIndicator() {
 
+        String focusMode = sharedPreferences.getString("focus_mode", "NONE");
+
+        switch (focusMode) {
+            case "HOME":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_home));
+                view.focusIndicator.setText("Focus: Home");
+                break;
+            case "WORK":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_work));
+                view.focusIndicator.setText("Focus: Work");
+                break;
+            case "SCHOOL":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_school));
+                view.focusIndicator.setText("Focus: School");
+                break;
+            case "ERRAND":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_errands));
+                view.focusIndicator.setText("Focus: Errands");
+                break;
+            default:
+                this.view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_done));
+                this.view.focusIndicator.setText("Focus: None");
+                break;
+        }
+    }
 }
