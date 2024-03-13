@@ -186,4 +186,5 @@ public class ItemTest {
                 tomorrowTime, false, "NONE", false, false, "SCHOOL");
         assertEquals(item4.getCategory(), "SCHOOL");
     }
+
 }
