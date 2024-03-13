@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,6 +27,7 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 
+import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
@@ -132,6 +134,8 @@ public class ItemListFragment extends ParentFragment {
             updateFragment();
         });
 
+        setFocusModeIndicator();
+
         return view.getRoot();
     }
 
@@ -171,6 +175,8 @@ public class ItemListFragment extends ParentFragment {
             editor.putString("formatted_date_today", currDate);
             editor.apply();
         }
+
+        setFocusModeIndicator();
 
         // Set date text from last saved date
         dateText.setText(dateFormatter.getTodaysDate(ZonedDateTime.now().plusDays(advanceCount)));
@@ -259,5 +265,37 @@ public class ItemListFragment extends ParentFragment {
                 view.placeholderText.setVisibility(View.VISIBLE);
             }
         });
+
+        setFocusModeIndicator();
+    }
+
+
+    public void setFocusModeIndicator() {
+        FragmentCardListBinding view = this.view;
+
+        if (focusMode == null) {
+            view.focusIndicator.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_done));
+            view.focusIndicator.setText("Focus: None");
+            return;
+        }
+
+        switch (focusMode) {
+            case "HOME":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
+                view.focusIndicator.setText("Focus: Home");
+                break;
+            case "WORK":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_work));
+                view.focusIndicator.setText("Focus: Work");
+                break;
+            case "SCHOOL":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_school));
+                view.focusIndicator.setText("Focus: School");
+                break;
+            case "ERRAND":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_errands));
+                view.focusIndicator.setText("Focus: Errands");
+                break;
+        }
     }
 }
