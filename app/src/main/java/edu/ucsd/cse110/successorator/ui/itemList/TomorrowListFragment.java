@@ -192,10 +192,19 @@ public class TomorrowListFragment extends ParentFragment {
                 if (cards.get(i).isDone()) {
                     if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                         if (cards.get(i).isRecurring()) {
-                            adapter.add(cards.get(i));
+                            if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
+                                adapter.add(cards.get(i));
+                                //add all monthly recurring tasks recurring today
+                            } else if (cards.get(i).getRecurringType().equals("MONTHLY") && cards.get(i).getDate().getDayOfMonth() == tempTime.getDayOfMonth()) {
+                                adapter.add(cards.get(i));
+                                //add all daily recurring tasks
+                            } else if (cards.get(i).getRecurringType().equals("DAILY")) {
+                                adapter.add(cards.get(i));
+                            } else if (cards.get(i).getRecurringType().equals("YEARLY") && cards.get(i).getDate().getDayOfYear() == tempTime.getDayOfYear()) {
+                                adapter.add(cards.get(i));
+                            }
                         } else {
-                            //If the card isn't recurring we want to display it since we already deleted all complete one-time tasks
-                            //BUT if its occurring tomorrow we don't want to display it
+                            //DISPLAY if its a tomorrow task
                             if (cards.get(i).isTomorrow()) {
                                 adapter.add(cards.get(i));
                             }
