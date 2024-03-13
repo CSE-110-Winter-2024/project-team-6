@@ -132,6 +132,35 @@ public class InMemoryDataSource {
         allItemsSubject.setValue(getItems());
     }
 
+    public void advanceDay(int id){
+        items.get(id).setDate(items.get(id).getDate().plusDays(1));
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+    public void advanceWeek(int id){
+        items.get(id).setDate(items.get(id).getDate().plusWeeks(1));
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+    public void advanceMonth(int id){
+        items.get(id).setDate(items.get(id).getDate().plusMonths(1));
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+    public void advanceYear(int id){
+        items.get(id).setDate(items.get(id).getDate().plusYears(1));
+        if(itemSubjects.containsKey(id)){
+            itemSubjects.get(id).setValue(items.get(id));
+        }
+        allItemsSubject.setValue(getItems());
+    }
+
     public void markRecurring(int id){
         items.get(id).markRecurring();
 

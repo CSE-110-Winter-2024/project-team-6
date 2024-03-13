@@ -225,5 +225,28 @@ public class ItemRepoTest {
 
     }
 
+    @Test
+    public void testAddCategory(){
+        Item item = new Item("Finish MMW essay", 1, 1, false,
+                mockTime, false, "NONE", false, false, "SCHOOL");
+        dataSource.putItem(item);
+        assertEquals(dataSource.getItems().get(0).getCategory(), "SCHOOL");
+    }
+
+    @Test
+    public void testListCategory(){
+        List<Item> items = new ArrayList<>();
+        items.add(new Item("Don't go to CSE110", 1, 1, false,
+                mockTime, false, "NONE", false, false, "SCHOOL"));
+        items.add(new Item("Sleep", 2, 2, true,
+                mockTime, false, "NONE", false, false, "HOME"));
+        items.add(new Item("Fire the boss", 3, 3, true,
+                mockTime, false, "NONE", false, false, "WORK"));
+
+        dataSource.putItems(items);
+        assertEquals(dataSource.getItems().get(0).getCategory(), "SCHOOL");
+        assertEquals(dataSource.getItems().get(1).getCategory(), "HOME");
+        assertEquals(dataSource.getItems().get(2).getCategory(), "WORK");
+    }
 
 }
