@@ -46,6 +46,7 @@ public class ItemListFragment extends ParentFragment {
 
     private boolean firstRun = true;
 
+    String focusMode;
     private SharedPreferences sharedPreferences;
 
     public ItemListFragment() {
@@ -68,6 +69,7 @@ public class ItemListFragment extends ParentFragment {
         // Persistence of Date
         sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
         advanceCount = sharedPreferences.getInt("advance_count", 0);
+        focusMode = sharedPreferences.getString("focus_mode", "NONE");
         dateFormatter = new DateFormatter(ZonedDateTime.now());
         String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");
 
@@ -187,15 +189,26 @@ public class ItemListFragment extends ParentFragment {
     }
 
     public void updateFragment() {
+        // Get focus mode
+        String focusMode = sharedPreferences.getString("focus_mode", "NONE");
+
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
 
             String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
-            for(int j = 0; j < arrayOfCategories.length; j++){  // Go through all category tags
+
+            int timesToCheck = arrayOfCategories.length;
+            // There is a focus mode selected
+            if (!focusMode.equals("NONE")) {
+                timesToCheck = 1;
+            }
+
+            for(int j = 0; j < timesToCheck; j++){  // Go through all category tags
                 for(int i = 0; i < cards.size(); i++) {
-                    if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
+                    if ((focusMode.equals("NONE") && cards.get(i).getCategory().equals(arrayOfCategories[j])) ||
+                        cards.get(i).getCategory().equals(focusMode)) {
                         if (!cards.get(i).isPending() && !cards.get(i).isDone()) {  // don't consider pending tasks in today view OR // don't consider done tasks yet
                             if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
@@ -214,8 +227,10 @@ public class ItemListFragment extends ParentFragment {
             }
 
             // Consider done tasks here
+
             for(int i = 0; i < cards.size(); i++) {
-                if (cards.get(i).isDone()) {
+                // Check to see if goals also match focus mode
+                if (cards.get(i).isDone() && (focusMode.equals("NONE") || cards.get(i).getCategory().equals(focusMode))) {
                     if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                         if (cards.get(i).isRecurring()) {
                             adapter.add(cards.get(i));

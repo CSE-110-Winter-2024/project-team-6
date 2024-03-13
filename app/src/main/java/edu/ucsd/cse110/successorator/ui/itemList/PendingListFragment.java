@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,6 +59,7 @@ public class PendingListFragment extends ParentFragment {
                              Bundle savedInstanceState) {
         this.view = FragmentPendingListBinding.inflate(inflater, container, false);
         view.cardList.setAdapter(adapter);
+        sharedPreferences = requireActivity().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
         view.addItem.setOnClickListener(v ->{
             var dialogFragment = CreatePendingItemDialogFragment.newInstance();
             // Unsure if we should use getSupportFragmentManager() or getParentFragmentManager()
@@ -74,13 +76,24 @@ public class PendingListFragment extends ParentFragment {
 
         super.onResume();
 
+        String focusMode = sharedPreferences.getString("focus_mode", "WORK");
+
+
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
             String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
-            for(int j = 0; j < arrayOfCategories.length; j++) {  // Go through all category tags
+
+            int timesToCheck = arrayOfCategories.length;
+            // There is a focus mode selected
+            if (!focusMode.equals("NONE")) {
+                timesToCheck = 1;
+            }
+
+            for(int j = 0; j < timesToCheck; j++) {  // Go through all category tags
                 for (int i = 0; i < cards.size(); i++) {
-                    if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
+                    if ((focusMode.equals("NONE") && cards.get(i).getCategory().equals(arrayOfCategories[j])) ||
+                        cards.get(i).getCategory().equals(focusMode)) {
                         if (cards.get(i).isPending()) {
                             adapter.add(cards.get(i));
                         }
