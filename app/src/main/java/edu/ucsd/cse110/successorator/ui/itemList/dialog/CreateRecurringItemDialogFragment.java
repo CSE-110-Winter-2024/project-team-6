@@ -74,6 +74,8 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
+        itemBuilder = new ItemBuilder();
+
         var modelOwner = requireActivity();
         var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
@@ -93,7 +95,7 @@ public class CreateRecurringItemDialogFragment extends DialogFragment {
             description += ", daily";
             recurringChoice = "DAILY";
         } else if (view.weeklyBtn.isChecked()){
-            description += ", weekly on " +  startDate.getDayOfWeek().toString();description += ", weekly on " +  startDate.getDayOfWeek().toString();
+            description += ", weekly on " +  startDate.getDayOfWeek().toString();
             recurringChoice = "WEEKLY";
         } else if (view.monthlyBtn.isChecked()){
             description += ", monthly on " +  dateFormatter.monthlyDate(startDate);

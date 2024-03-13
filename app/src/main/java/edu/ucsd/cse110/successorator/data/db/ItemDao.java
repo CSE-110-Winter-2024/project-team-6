@@ -16,6 +16,7 @@ public interface ItemDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Long insert(ItemEntity item);
 
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insert(List<ItemEntity> items);
 
@@ -85,6 +86,28 @@ public interface ItemDao{
 
     @Query("DELETE FROM items WHERE is_done = true AND is_recurring = false AND is_tomorrow = false")
     void removeAllComplete();
+
+    @Transaction
+    default void resetFinishedRecurring(){
+        List<ItemEntity> items = findAll();
+        for(int i = 0; i < items.size(); i++){
+            ItemEntity temp = items.get(i);
+            if(temp.isDone && temp.isRecurring){
+                temp.isDone = !temp.isDone;
+                if(temp.recurringType.equals("WEEKLY")){
+                    temp.date = temp.date.plusWeeks(1);
+                }else if(temp.recurringType.equals("MONTHLY")){
+                    temp.date = temp.date.plusMonths(1);
+                }else if(temp.recurringType.equals("DAILY")){
+                    temp.date = temp.date.plusDays(1);
+                }else if(temp.recurringType.equals("YEARLY")){
+                    temp.date = temp.date.plusYears(1);
+                }
+
+                insert(temp);
+            }
+        }
+    }
 
     @Query("DELETE FROM items WHERE id = :id")
     void delete(int id);

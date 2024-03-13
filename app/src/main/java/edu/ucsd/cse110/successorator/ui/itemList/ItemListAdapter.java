@@ -91,7 +91,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         // Home by default
         // binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
 
-        if (!flashcard.isDone()) {
+        if (!flashcard.isDone() || fragment.equals("RECURRING") ||
+                (fragment.equals("TOMORROW") && flashcard.isRecurring() && !flashcard.isDone())) { // Items in recurring never grey
             switch (flashcard.getCategory()) {
                 case "HOME":
                     binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
@@ -110,7 +111,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                     binding.TAG.setText("E");
                     break;
             }
-        } else  {
+
+        } else {
             binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_done));
             switch (flashcard.getCategory()) {
                 case "HOME":
@@ -126,6 +128,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                     binding.TAG.setText("E");
                     break;
             }
+
         }
 
 
