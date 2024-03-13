@@ -36,6 +36,11 @@ public class SuccessoratorApplication extends Application {
                 .putInt("advance_count", 0)
                 .apply();
 
+        // When restarting application, focus mode should be off
+        sharedPreferences2.edit()
+                .putString("focus_mode", "NONE")
+                .apply();
+
         if(isFirstRun && database.itemDao().count() == 0){
             itemRepository.save(InMemoryDataSource.DEFAULT_CARDS);
 
