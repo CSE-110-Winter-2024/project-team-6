@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.successorator;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
 
+    private SharedPreferences sharedPreferences;
+    private String focusMode;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        sharedPreferences = getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+
+
         NavigationView navigationView = findViewById(R.id.nav_view);
 
 
@@ -54,18 +62,26 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             // Handle navigation view item clicks here.
             int id = item.getItemId();
+            Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
             if (id == R.id.home){
-                Log.d("Focus", "Home");
+                editor.putString("focus_mode", "HOME");
             } else if (id == R.id.school){
-                Log.d("Focus", "School");
+                editor.putString("focus_mode", "SCHOOL");
             } else if (id == R.id.errands){
-                Log.d("Focus","Errands");
+                editor.putString("focus_mode", "ERRAND");
             } else if (id == R.id.work){
-                Log.d("Focus", "Work");
+                editor.putString("focus_mode", "WORK");
+            } else if (id == R.id.cancel_focus){
+                editor.putString("focus_mode", "NONE");
             }
 
+            editor.apply();
 
+            swapFragments(currFrag.getClass());
             // Close the drawer after an item is selected
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;

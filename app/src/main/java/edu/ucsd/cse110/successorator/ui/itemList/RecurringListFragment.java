@@ -82,7 +82,7 @@ public class RecurringListFragment extends ParentFragment {
                 timesToCheck = 1;
             }
 
-            for(int j = 0; j < arrayOfCategories.length; j++) {  // Go through all category tags
+            for(int j = 0; j < timesToCheck; j++) {  // Go through all category tags
                 for (int i = 0; i < cards.size(); i++) {
                     if ((focusMode.equals("NONE") && cards.get(i).getCategory().equals(arrayOfCategories[j])) ||
                             cards.get(i).getCategory().equals(focusMode)) {
