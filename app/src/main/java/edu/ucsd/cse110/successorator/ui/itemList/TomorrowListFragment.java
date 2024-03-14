@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 import edu.ucsd.cse110.successorator.MainViewModel;
+import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentTomorrowListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
@@ -120,6 +122,8 @@ public class TomorrowListFragment extends ParentFragment {
             dialogFragment.show(getParentFragmentManager(),"CreateTomorrowItemDialogFragment");
         });
 
+        setFocusModeIndicator();
+
         return view.getRoot();
     }
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
@@ -129,6 +133,7 @@ public class TomorrowListFragment extends ParentFragment {
         // Get formatted date and display, the saved date for current day
         String savedDateForTodayView = sharedPreferences.getString("formatted_date_today", "ERR");
         advanceCount = sharedPreferences.getInt("advance_count", 0);
+
 
         // Determine which goals to load dependent on the date
         updateFragment();
@@ -152,15 +157,27 @@ public class TomorrowListFragment extends ParentFragment {
 
     // Determine which goals to load dependent on the date
     public void updateFragment() {
+
+        // Get focus mode
+        String focusMode = sharedPreferences.getString("focus_mode", "NONE");
+
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount + 1);
 
             String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
-            for(int j = 0; j < arrayOfCategories.length; j++) {  // Go through all category tags
+
+            int timesToCheck = arrayOfCategories.length;
+            // There is a focus mode selected
+            if (!focusMode.equals("NONE")) {
+                timesToCheck = 1;
+            }
+
+            for(int j = 0; j < timesToCheck; j++) {  // Go through all category tags
                 for (int i = 0; i < cards.size(); i++) {
-                    if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
+                    if ((focusMode.equals("NONE") && cards.get(i).getCategory().equals(arrayOfCategories[j])) ||
+                         cards.get(i).getCategory().equals(focusMode)) {
                         if (!cards.get(i).isPending() && !cards.get(i).isDone()) {
                             if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
@@ -189,7 +206,7 @@ public class TomorrowListFragment extends ParentFragment {
 
             // Consider done tasks here
             for(int i = 0; i < cards.size(); i++) {
-                if (cards.get(i).isDone()) {
+                if (cards.get(i).isDone() && (focusMode.equals("NONE") || cards.get(i).getCategory().equals(focusMode))) {
                     if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                         if (cards.get(i).isRecurring()) {
                             if (cards.get(i).getRecurringType().equals("WEEKLY") && cards.get(i).getDate().getDayOfWeek().toString().equals(tempTime.getDayOfWeek().toString())) {
@@ -226,5 +243,31 @@ public class TomorrowListFragment extends ParentFragment {
             }
         });
     }
+    public void setFocusModeIndicator() {
 
+        String focusMode = sharedPreferences.getString("focus_mode", "NONE");
+
+        switch (focusMode) {
+            case "HOME":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_home));
+                view.focusIndicator.setText("Focus: Home");
+                break;
+            case "WORK":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_work));
+                view.focusIndicator.setText("Focus: Work");
+                break;
+            case "SCHOOL":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_school));
+                view.focusIndicator.setText("Focus: School");
+                break;
+            case "ERRAND":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_errands));
+                view.focusIndicator.setText("Focus: Errands");
+                break;
+            default:
+                this.view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_done));
+                this.view.focusIndicator.setText("Focus: None");
+                break;
+        }
+    }
 }
