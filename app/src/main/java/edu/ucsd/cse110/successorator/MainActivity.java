@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -28,11 +31,12 @@ import edu.ucsd.cse110.successorator.ui.itemList.TomorrowListFragment;
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding view;
     public DrawerLayout drawerLayout;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
+
 
     private SharedPreferences sharedPreferences;
     private String focusMode;
 
+    private ActionBarDrawerToggle actionBarDrawerToggle;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
 
         return super.onOptionsItemSelected(item);
 
