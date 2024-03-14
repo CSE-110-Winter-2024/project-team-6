@@ -196,13 +196,35 @@ public class MainViewModelTest extends TestCase {
     }
 
     @Test
+    public void testDateViews() {
+        List<Item> items = new ArrayList<>();
+        items.add(new Item("Caffe Calabria - coffee", 1, 1, true,
+                mockTime, false, "NONE", false, false, "ERRAND"));
+        // Item set for tomorrow
+        items.add(new Item("cook dinner", 2, 2, true,
+                mockTime.plusDays(1), false, "NONE", false, false, "HOME"));
+        // Have pending item
+        items.add(new Item("Homework", 3, 3, true,
+                mockTime, false, "NONE", true, false, "SCHOOL"));
+        dataSource.putItems(items);
+
+        MainViewModel viewModel = new MainViewModel(itemRepository);
+
+        viewModel.getOrderedCards().observe(cards -> {
+            assertEquals(3, cards.size());
+            assertEquals(mockTime.plusDays(1), cards.get(1).getDate());
+            assertTrue(cards.get(2).isPending());
+        });
+    }
+
+    @Test
     public void testRecurringTasks() {
         List<Item> items = new ArrayList<>();
         items.add(new Item("Caffe Calabria - coffee", 1, 1, true,
                 mockTime, false, "NONE", false, false, "ERRAND"));
-        items.add(new Item("cook dinner", 1, 1, true,
+        items.add(new Item("cook dinner", 2, 2, true,
                 mockTime, false, "DAILY", false, false, "HOME"));
-        items.add(new Item("Homework", 1, 1, true,
+        items.add(new Item("Homework", 3, 3, true,
                 mockTime, false, "WEEKLY", false, false, "SCHOOL"));
         dataSource.putItems(items);
 
@@ -210,7 +232,9 @@ public class MainViewModelTest extends TestCase {
 
         // Make sure the recurrence functions are correctly registers
         viewModel.getOrderedCards().observe(cards -> {
-            assertEquals("WEEKLY", cards.get(0).getRecurringType());
+            assertEquals("NONE", cards.get(0).getRecurringType());
+            assertEquals("DAILY", cards.get(1).getRecurringType());
+            assertEquals("WEEKLY", cards.get(2).getRecurringType());
         });
     }
 }
