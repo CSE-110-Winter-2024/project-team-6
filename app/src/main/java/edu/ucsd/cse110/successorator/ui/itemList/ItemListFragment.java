@@ -17,15 +17,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import edu.ucsd.cse110.successorator.DateFormatter;
 
+import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.lib.domain.Item;
 import edu.ucsd.cse110.successorator.ui.itemList.dialog.CreateItemDialogFragment;
 import edu.ucsd.cse110.successorator.databinding.FragmentCardListBinding;
@@ -46,6 +49,7 @@ public class ItemListFragment extends ParentFragment {
 
     private boolean firstRun = true;
 
+    String focusMode;
     private SharedPreferences sharedPreferences;
 
     public ItemListFragment() {
@@ -69,6 +73,7 @@ public class ItemListFragment extends ParentFragment {
         this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME",sharedPreferences.getInt("advance_count", 0));
 
         advanceCount = sharedPreferences.getInt("advance_count", 0);
+        focusMode = sharedPreferences.getString("focus_mode", "NONE");
         dateFormatter = new DateFormatter(ZonedDateTime.now());
         String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");
 
@@ -131,6 +136,8 @@ public class ItemListFragment extends ParentFragment {
             updateFragment();
         });
 
+        setFocusModeIndicator();
+
         return view.getRoot();
     }
 
@@ -188,15 +195,26 @@ public class ItemListFragment extends ParentFragment {
     }
 
     public void updateFragment() {
+        // Get focus mode
+        String focusMode = sharedPreferences.getString("focus_mode", "NONE");
+
         activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();
             ZonedDateTime tempTime = ZonedDateTime.now().plusDays(advanceCount);
 
             String[] arrayOfCategories = {"HOME","WORK","SCHOOL","ERRAND"};
-            for(int j = 0; j < arrayOfCategories.length; j++){  // Go through all category tags
+
+            int timesToCheck = arrayOfCategories.length;
+            // There is a focus mode selected
+            if (!focusMode.equals("NONE")) {
+                timesToCheck = 1;
+            }
+
+            for(int j = 0; j < timesToCheck; j++){  // Go through all category tags
                 for(int i = 0; i < cards.size(); i++) {
-                    if (cards.get(i).getCategory().equals(arrayOfCategories[j])) {
+                    if ((focusMode.equals("NONE") && cards.get(i).getCategory().equals(arrayOfCategories[j])) ||
+                        cards.get(i).getCategory().equals(focusMode)) {
                         if (!cards.get(i).isPending() && !cards.get(i).isDone()) {  // don't consider pending tasks in today view OR // don't consider done tasks yet
                             if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
@@ -215,8 +233,10 @@ public class ItemListFragment extends ParentFragment {
             }
 
             // Consider done tasks here
+
             for(int i = 0; i < cards.size(); i++) {
-                if (cards.get(i).isDone()) {
+                // Check to see if goals also match focus mode
+                if (cards.get(i).isDone() && (focusMode.equals("NONE") || cards.get(i).getCategory().equals(focusMode))) {
                     if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
                         if (cards.get(i).isRecurring()) {
                             adapter.add(cards.get(i));
@@ -245,5 +265,34 @@ public class ItemListFragment extends ParentFragment {
                 view.placeholderText.setVisibility(View.VISIBLE);
             }
         });
+
+    }
+
+    public void setFocusModeIndicator() {
+
+        String focusMode = sharedPreferences.getString("focus_mode", "NONE");
+
+        switch (focusMode) {
+            case "HOME":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_home));
+                view.focusIndicator.setText("Focus: Home");
+                break;
+            case "WORK":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_work));
+                view.focusIndicator.setText("Focus: Work");
+                break;
+            case "SCHOOL":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_school));
+                view.focusIndicator.setText("Focus: School");
+                break;
+            case "ERRAND":
+                view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_errands));
+                view.focusIndicator.setText("Focus: Errands");
+                break;
+            default:
+                this.view.focusIndicator.setBackground(ContextCompat.getDrawable(requireActivity().getApplicationContext(), R.drawable.outline_done));
+                this.view.focusIndicator.setText("Focus: None");
+                break;
+        }
     }
 }

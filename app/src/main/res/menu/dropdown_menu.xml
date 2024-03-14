@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_today"
+    <item android:id="@+id/today"
         android:title="Today" />
-    <item android:id="@+id/action_tomorrow"
+    <item android:id="@+id/Tomorrow"
         android:title="Tomorrow" />
-    <item android:id="@+id/action_reccurring"
+    <item android:id="@+id/Recurring"
         android:title="Reccurring" />
-    <item android:id="@+id/action_pending"
+    <item android:id="@+id/Pending"
         android:title="Pending" />
 </menu>
