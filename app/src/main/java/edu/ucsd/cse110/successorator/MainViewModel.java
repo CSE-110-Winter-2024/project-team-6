@@ -61,10 +61,6 @@ public class MainViewModel extends ViewModel {
 
     public void markCompleteOrIncomplete(int id) { itemRepository.markCompleteOrIncomplete(id); }
 
-    public Subject<ZonedDateTime> getDisplayedText() {
-        return currentDate;
-    }
-
 
     public Subject<List<Item>> getOrderedCards() {
         return orderedCards;
