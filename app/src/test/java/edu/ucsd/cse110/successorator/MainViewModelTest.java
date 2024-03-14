@@ -176,4 +176,41 @@ public class MainViewModelTest extends TestCase {
 
         });
     }
+
+    @Test
+    public void filterCategory() {
+        List<Item> items = new ArrayList<>();
+        items.add(new Item("Caffe Calabria - coffee", 1, 1, true,
+                mockTime, false, "NONE", false, false, "ERRAND"));
+        items.add(new Item("cook dinner", 1, 1, true,
+                mockTime, false, "NONE", false, false, "HOME"));
+        items.add(new Item("Homework", 1, 1, true,
+                mockTime, false, "NONE", false, false, "SCHOOL"));
+        dataSource.putItems(items);
+
+        MainViewModel viewModel = new MainViewModel(itemRepository);
+
+        viewModel.getOrderedCards().observe(cards -> {
+            assertEquals("SCHOOL", cards.get(2).getCategory());
+        });
+    }
+
+    @Test
+    public void testRecurringTasks() {
+        List<Item> items = new ArrayList<>();
+        items.add(new Item("Caffe Calabria - coffee", 1, 1, true,
+                mockTime, false, "NONE", false, false, "ERRAND"));
+        items.add(new Item("cook dinner", 1, 1, true,
+                mockTime, false, "DAILY", false, false, "HOME"));
+        items.add(new Item("Homework", 1, 1, true,
+                mockTime, false, "WEEKLY", false, false, "SCHOOL"));
+        dataSource.putItems(items);
+
+        MainViewModel viewModel = new MainViewModel(itemRepository);
+
+        // Make sure the recurrence functions are correctly registers
+        viewModel.getOrderedCards().observe(cards -> {
+            assertEquals("WEEKLY", cards.get(0).getRecurringType());
+        });
+    }
 }
