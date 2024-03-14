@@ -155,7 +155,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
                 // If Recurring Task still active in Today, don't mark done
                 if (flashcard.isRecurring() && !flashcard.getDate().isAfter(ZonedDateTime.now().plusDays(advanceDate))){
-                    Toast.makeText(context, "This goal is still active for Today. If you've finished this goal for Today, mark it finished in that view!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "This goal is still active for Today.  Please mark it finished in that view!", Toast.LENGTH_LONG).show();
                 } else {
                     //if (!flashcard.isRecurring()) { // One time tasks can be struck through as normal
                         strikethroughClick.accept(id);
