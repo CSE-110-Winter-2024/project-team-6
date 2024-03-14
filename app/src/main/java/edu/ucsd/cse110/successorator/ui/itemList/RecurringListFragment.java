@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.successorator.ui.itemList;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,10 +42,11 @@ public class RecurringListFragment extends ParentFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
         this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), id ->{
             var dialogFragment = ConfirmDeleteCardDialogFragment.newInstance(id);
             dialogFragment.show(getParentFragmentManager(), "ConfirmDeleteCardDialogFragment");
-        }, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "RECURRING");
+        }, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "RECURRING", sharedPreferences.getInt("advance_count", 0));
         /*activityModel.getOrderedCards().observe(cards -> {
             if(cards == null) return;
             adapter.clear();

@@ -63,10 +63,11 @@ public class ItemListFragment extends ParentFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //dateChanged = false;
-        this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME");
 
         // Persistence of Date
         sharedPreferences = requireActivity().getApplicationContext().getSharedPreferences("formatted_date", Context.MODE_PRIVATE);
+        this.adapter = new ItemListAdapter(requireContext(), getParentFragmentManager(), List.of(), activityModel::remove, activityModel::append, activityModel::prepend, activityModel::markCompleteOrIncomplete, "HOME",sharedPreferences.getInt("advance_count", 0));
+
         advanceCount = sharedPreferences.getInt("advance_count", 0);
         dateFormatter = new DateFormatter(ZonedDateTime.now());
         String savedDate = sharedPreferences.getString("formatted_date_today", "ERR");

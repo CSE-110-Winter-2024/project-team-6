@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.FragmentManager;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
     String fragment;
     FragmentManager fragmentManager;
+    int advanceDate;
 
 
     Context context;
@@ -43,7 +45,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             Consumer<Item> appendClick,
             Consumer<Item> prependClick,
             Consumer<Integer> strikethroughClick,
-            String fragment
+            String fragment,
+            int advanceDate
     ){
         super(context, 0, new ArrayList<>(items));
         this.fragmentManager = fragmentManager;
@@ -52,7 +55,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         this.prependClick = prependClick;
         this.strikethroughClick = strikethroughClick;
         this.fragment = fragment;
-
+        this.advanceDate = advanceDate;
         this.context = context;
 
     }
@@ -80,7 +83,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
 
         // Strikethroughs not affected in recurring view
         // They are also not reflected in recurring tasks in the tomorrow view that are not already done
-        if(flashcard.isDone() && !fragment.equals("RECURRING") && !(fragment.equals("TOMORROW") && flashcard.isRecurring())){
+        if(flashcard.isDone() && !fragment.equals("RECURRING") && !(fragment.equals("TOMORROW") && !flashcard.getDate().isAfter(ZonedDateTime.now().plusDays(advanceDate)))){
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else{
             binding.cardFrontText.setPaintFlags(binding.cardFrontText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -92,7 +95,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
         // binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
 
         if (!flashcard.isDone() || fragment.equals("RECURRING") ||
-                (fragment.equals("TOMORROW") && flashcard.isRecurring() && !flashcard.isDone())) { // Items in recurring never grey
+                (fragment.equals("TOMORROW") && flashcard.isRecurring() && !flashcard.getDate().isAfter(ZonedDateTime.now().plusDays(advanceDate)))) { // Items in recurring never grey
             switch (flashcard.getCategory()) {
                 case "HOME":
                     binding.TAG.setBackground(ContextCompat.getDrawable(super.getContext(), R.drawable.outline_home));
@@ -151,10 +154,10 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                 assert id != null;
 
                 // If Recurring Task still active in Today, don't mark done
-                if (flashcard.isRecurring() && !flashcard.isDone()) {
+                if (flashcard.isRecurring() && !flashcard.getDate().isAfter(ZonedDateTime.now().plusDays(advanceDate))){
                     Toast.makeText(context, "This goal is still active for Today. If you've finished this goal for Today, mark it finished in that view!", Toast.LENGTH_LONG).show();
                 } else {
-                    if (!flashcard.isRecurring()) { // One time tasks can be struck through as normal
+                    //if (!flashcard.isRecurring()) { // One time tasks can be struck through as normal
                         strikethroughClick.accept(id);
                         getItem(position).markDone();
                         onDeleteClick.accept(id);
@@ -163,6 +166,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                         } else {
                             prependClick.accept(flashcard);
                         }
+                        /*
                     } else {  // If recurring and done
                         strikethroughClick.accept(id);
                         onDeleteClick.accept(id);
@@ -173,6 +177,8 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                             prependClick.accept(flashcard);
                         }
                     }
+
+                         */
                 }
             });
         }else if(fragment.equals("RECURRING")){
