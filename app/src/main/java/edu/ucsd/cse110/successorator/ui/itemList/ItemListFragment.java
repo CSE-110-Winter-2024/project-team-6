@@ -214,9 +214,11 @@ public class ItemListFragment extends ParentFragment {
             for(int j = 0; j < timesToCheck; j++){  // Go through all category tags
                 for(int i = 0; i < cards.size(); i++) {
                     if ((focusMode.equals("NONE") && cards.get(i).getCategory().equals(arrayOfCategories[j])) ||
-                        cards.get(i).getCategory().equals(focusMode)) {
+                            cards.get(i).getCategory().equals(focusMode)) {
                         if (!cards.get(i).isPending() && !cards.get(i).isDone()) {  // don't consider pending tasks in today view OR // don't consider done tasks yet
-                            if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() || tempTime.getYear() > cards.get(i).getDate().getYear())) {
+                            if ((tempTime.getDayOfYear() >= cards.get(i).getDate().getDayOfYear() &&
+                                    tempTime.getYear() == cards.get(i).getDate().getYear() ||
+                                    tempTime.getYear() > cards.get(i).getDate().getYear())) {
                                 if (cards.get(i).isRecurring()) {
                                     adapter.add(cards.get(i));
                                 } else {
