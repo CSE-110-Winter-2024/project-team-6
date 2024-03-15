@@ -2,4 +2,15 @@
     <string name="app_name">Successorator</string>
     <string name="placeholder">Placeholder</string>
     <string name="hello_world">Hello, World!</string>
+    <string name="time_text">timetext</string>
+    <string name="add_day_text"><![CDATA[>]]></string>
+    <string name="no_tasks">No tasks to be done</string>
+    <string name="add_task">+</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+
 </resources>

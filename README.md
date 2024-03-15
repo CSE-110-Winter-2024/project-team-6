@@ -1,20 +1,9 @@
-# Team X - Successorator 
+# Team 6 - Successorator 
 
+Successorator: Get on top of your tasks today with Successorator
 ---
+Calculation of Iteration 1's Velocity and applied to I2's Planning
 
-This is the mostly empty template for the Successorator project.
+Calculation of Iteration 1's velocity: There were 30 hours of work to be done and we expended roughly 70 hours (11-12 hours per person) so our velocity was 3/7 = 0.43. Our velocity was higher than anticipated and this was likely because we are more familiar with each other and can collaborate more effectively and efficiently. Its also because of the experience we accumulated working on MS1. 
 
-## Getting Started
-
- - [ ] Look around the project.
-   - The `docs/` directory may be helpful, as Slack/Discord messages are easy to lose.
-     - This is a good place to put finalized user stories, standards, guidelines, meeting notes, etc
-       that you want to stick with the repository in perpetuity (e.g. after the semester ends) e.g.
-       for portfolio purposes.
-     - Google Docs is easier for collaboration, but eventually you might want to put the
-       finalized versions here for reference. (This way you can also reference them in PRs!)
- - [ ] Modify the `.github/pull_request_template.md` to suit your needs.
-   - You **do not** need to use the exact same template, but justify your changes when you 
-     PR the updated template.
- - [ ] Replace this README with something appropriate.
-   - **When you do, replace the title to replace X with your team number.**
+Velocity Estimate for Iteration 2: 0.43. Using the calculation for iteration 1's velocity we applied it to iteration 2 as we believed that our rate of work during iteration 1 was very smooth, productive and sustainable. As such, the velocity should roughly remain the same. We felt confident about this estimate also because of the experience we accumulated working on the first iteration. 
